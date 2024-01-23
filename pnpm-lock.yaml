@@ -5,9 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@effect/schema':
+    specifier: ^0.60.3
+    version: 0.60.3(effect@2.1.0)(fast-check@3.15.0)
   '@xstate/svelte':
     specifier: ^3.0.2
     version: 3.0.2(svelte@4.2.8)(xstate@5.5.1)
+  effect:
+    specifier: ^2.1.0
+    version: 2.1.0
   svelte:
     specifier: ^4.2.8
     version: 4.2.8
@@ -16,6 +22,9 @@ dependencies:
     version: 5.5.1
 
 devDependencies:
+  '@effect/language-service':
+    specifier: ^0.1.0
+    version: 0.1.0
   '@sveltejs/vite-plugin-svelte':
     specifier: ^3.0.1
     version: 3.0.1(svelte@4.2.8)(vite@5.0.11)
@@ -102,6 +111,20 @@ packages:
     dependencies:
       regenerator-runtime: 0.14.1
     dev: true
+
+  /@effect/language-service@0.1.0:
+    resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
+    dev: true
+
+  /@effect/schema@0.60.3(effect@2.1.0)(fast-check@3.15.0):
+    resolution: {integrity: sha512-B+07uFUNCnKQFwoKsphfvB+O2WNXlIhos+EPg9Oodx0lbha9zlm1f1CTT59kZp4y0+LghX/Ex7x+Bosg5p/nYw==}
+    peerDependencies:
+      effect: ^2.1.0
+      fast-check: ^3.13.2
+    dependencies:
+      effect: 2.1.0
+      fast-check: 3.15.0
+    dev: false
 
   /@esbuild/aix-ppc64@0.19.11:
     resolution: {integrity: sha512-FnzU0LyE3ySQk7UntJO4+qIiQgI7KoODnZg5xzXIrFJlKd2P2gwHsHY4927xj9y5PJmJSzULiUCWmv7iWnNa7g==}
@@ -1028,6 +1051,10 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
+  /effect@2.1.0:
+    resolution: {integrity: sha512-fZfyDtlw5RSUA5oQTBu+LOjXwcQb2lGfW7XKKCd34aELjoUKeIxm8HVo6bkpPLlPARqyyT5DfrlIhjrg2RiZCQ==}
+    dev: false
+
   /electron-to-chromium@1.4.630:
     resolution: {integrity: sha512-osHqhtjojpCsACVnuD11xO5g9xaCyw7Qqn/C2KParkMv42i8jrJJgx3g7mkHfpxwhy9MnOJr8+pKOdZ7qzgizg==}
     dev: true
@@ -1250,6 +1277,13 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /fast-check@3.15.0:
+    resolution: {integrity: sha512-iBz6c+EXL6+nI931x/sbZs1JYTZtLG6Cko0ouS8LRTikhDR7+wZk4TYzdRavlnByBs2G6+nuuJ7NYL9QplNt8Q==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      pure-rand: 6.0.4
+    dev: false
 
   /fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -1991,6 +2025,10 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
     dev: true
+
+  /pure-rand@6.0.4:
+    resolution: {integrity: sha512-LA0Y9kxMYv47GIPJy6MI84fqTd2HmYZI83W/kM/SkKfDlajnZYfmXFTxkbY+xSBPkLJxltMa9hIkmdc29eguMA==}
+    dev: false
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
