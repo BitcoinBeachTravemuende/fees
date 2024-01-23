@@ -1,10 +1,20 @@
 <script lang="ts">
-  import { useMachine } from '@xstate/svelte'
   import btcLogo from './assets/btc.svg'
   import './app.css'
-  import { toggleMachine } from './model/appMachine'
+  import { endpoint, fees, send, retries, state } from './state/store'
+  import { foldA, isLoading } from './util/async'
+  import { pipe } from 'effect'
 
-  const { snapshot, send } = useMachine(toggleMachine)
+  $: render = () =>
+    pipe(
+      $fees,
+      foldA(
+        (data) => `pending ${JSON.stringify(data, null, 2)}`,
+        (data) => `loading ${JSON.stringify(data, null, 2)}`,
+        (data) => `error ${JSON.stringify(data, null, 2)}`,
+        (data) => `success ${JSON.stringify(data, null, 2)}`
+      )
+    )
 </script>
 
 <main class="flex h-screen flex-col">
@@ -14,14 +24,28 @@
       fees
     </h1>
     <div class="flex items-center">
-      <div>mempool</div>
+      <div>{$endpoint}</div>
       <div class="ml-2">settings</div>
     </div>
   </header>
-  <section class="flex min-h-64 flex-grow items-center justify-center">
-    <button on:click={() => send({ type: 'TOGGLE' })}>
-      {$snapshot.value === 'inactive' ? 'Click to activate' : 'Active! Click to deactivate'}
+  <section class="flex min-h-64 flex-grow flex-col items-center justify-center">
+    <button
+      class="mt-10"
+      on:click={() => send({ type: 'fees.load' })}
+      disabled={isLoading($fees)}
+    >
+      load fees ({isLoading($fees)} / {$retries})
     </button>
+    <div>--------------</div>
+    <div class="">
+      {JSON.stringify($fees, null, 2)}
+    </div>
+    <div class="">
+      state: {JSON.stringify($state, null, 2)}
+    </div>
+    <div>
+      {render()}
+    </div>
   </section>
   <footer class="flex justify-center px-4 py-2">footer</footer>
 </main>

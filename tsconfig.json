@@ -1,6 +1,9 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    // https://www.npmjs.com/package/@effect/schema#requirements
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
     // https://stately.ai/docs/typescript#set-up-your-tsconfigjson-file
     "strictNullChecks": true,
     "skipLibCheck": true,
@@ -17,7 +20,12 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]
