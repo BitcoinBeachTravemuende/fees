@@ -2,7 +2,7 @@ import { assign, fromCallback, fromPromise, setup } from 'xstate'
 
 import { Effect, Option as O, pipe } from 'effect'
 
-import type { Endpoint, FeesAsync } from '../types'
+import type { Endpoint, FeesAsync, GetFeeError } from '../types'
 import {
   fail,
   initial,
@@ -110,7 +110,7 @@ export const machine = setup({
             guard: 'checkLastRetry',
             target: 'idle',
             actions: assign(({ event }) => ({
-              fees: fail(event.error),
+              fees: fail(event.error as unknown as GetFeeError),
             })),
           },
         ],

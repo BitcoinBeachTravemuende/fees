@@ -1,14 +1,14 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "target": "ESNext",
     // https://www.npmjs.com/package/@effect/schema#requirements
     "strict": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false, // true is not supported by xstate
     // https://stately.ai/docs/typescript#set-up-your-tsconfigjson-file
     "strictNullChecks": true,
     "skipLibCheck": true,
-
-    "target": "ESNext",
+    "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "module": "ESNext",
     "resolveJsonModule": true,
@@ -18,15 +18,17 @@
      * Note that setting allowJs false does not prevent the use
      * of JS in `.svelte` files.
      */
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": true,
     "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
     "plugins": [
       {
-        "name": "@effect/language-service"
-      }
-    ]
+        "name": "@effect/language-service",
+      },
+    ],
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "references": [{ "path": "./tsconfig.node.json" }],
 }
