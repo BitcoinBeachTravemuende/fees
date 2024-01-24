@@ -1,7 +1,6 @@
 import { parseEither } from '@effect/schema/Parser'
-import { Effect as E, Effect, pipe } from 'effect'
+import { Config as C, Effect as E, Effect, pipe } from 'effect'
 import * as S from '@effect/schema/Schema'
-import { Config as C } from 'effect'
 import type { GetFeeError, Fees } from '../types'
 import * as M from './mempool'
 
@@ -22,13 +21,13 @@ export const getFees = <T>({
   schema,
   toFees,
 }: {
-  url: string
+  url: C.Config<string>
   schema: S.Schema<T>
   toFees: (fees: T) => E.Effect<never, never, Fees>
 }): E.Effect<never, GetFeeError, Fees> =>
   pipe(
     url,
-    fetchFees,
+    E.flatMap(fetchFees),
     E.flatMap(getJson),
     E.flatMap(parseEither(schema)),
     E.flatMap(toFees),
@@ -36,7 +35,7 @@ export const getFees = <T>({
   )
 
 export const getMempoolFees = getFees({
-  url: M.URL,
+  url: M.url,
   schema: M.Fees,
   toFees: M.toFees,
 })

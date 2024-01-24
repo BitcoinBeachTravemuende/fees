@@ -1,11 +1,10 @@
 import type * as App from '../types'
 
 import * as S from '@effect/schema/Schema'
-import { Effect as E } from 'effect'
-import { envStringWithDefault } from '../util/env'
+import { Config as C, Effect as E } from 'effect'
 
-export const URL: string = envStringWithDefault(
-  import.meta.env.VITE_URL_MEMPOOL,
+export const url: C.Config<string> = C.withDefault(
+  C.succeed(import.meta.env.VITE_URL_MEMPOOL),
   'https://mempool.space/api/v1/fees/recommended'
 )
 
