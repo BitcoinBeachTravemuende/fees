@@ -22,13 +22,13 @@ export const getFees = <T>({
   schema,
   toFees,
 }: {
-  url: C.Config<string>
+  url: string
   schema: S.Schema<T>
   toFees: (fees: T) => E.Effect<never, never, Fees>
 }): E.Effect<never, GetFeeError, Fees> =>
   pipe(
     url,
-    E.flatMap(fetchFees),
+    fetchFees,
     E.flatMap(getJson),
     E.flatMap(parseEither(schema)),
     E.flatMap(toFees),
@@ -36,7 +36,7 @@ export const getFees = <T>({
   )
 
 export const getMempoolFees = getFees({
-  url: M.url,
+  url: M.URL,
   schema: M.Fees,
   toFees: M.toFees,
 })
