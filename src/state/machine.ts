@@ -20,7 +20,7 @@ export const machine = setup({
     }
   },
   actors: {
-    fetchFees: fromPromise(
+    fetchFeesActor: fromPromise(
       async ({ input }: { input: { endpoint: Endpoint } }) => {
         console.log('ACTOR fetchFees:', input.endpoint)
         await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -48,31 +48,34 @@ export const machine = setup({
     idle: {},
     loading: {
       invoke: {
-        src: 'fetchFees',
+        src: 'fetchFeesActor',
         input: ({ context }) => ({ endpoint: context.endpoint }),
         onDone: {
           target: 'idle',
           actions: [
-            assign({
-              fees: ({ event }) => success(event.output),
-              retries: 0,
-            }),
+            ({ event }) =>
+              assign({
+                fees: success(event.output),
+                retries: 0,
+              }),
           ],
         },
         onError: [
           {
             guard: 'checkRetry',
             target: 'retry',
-            actions: assign({
-              retries: ({ context }) => context.retries + 1,
-            }),
+            actions: ({ context }) =>
+              assign({
+                retries: context.retries + 1,
+              }),
           },
           {
             guard: 'checkLastRetry',
             target: 'idle',
-            actions: assign({
-              fees: ({ event }) => fail(event.error as unknown as GetFeeError),
-            }),
+            actions: ({ event }) =>
+              assign({
+                fees: fail(event.error as unknown as GetFeeError),
+              }),
           },
         ],
       },
@@ -89,10 +92,11 @@ export const machine = setup({
   on: {
     'fees.load': {
       target: '.loading',
-      actions: assign({
-        fees: ({ context }) => pipe(context.fees, value, loading),
-        retries: 0,
-      }),
+      actions: ({ context }) =>
+        assign({
+          fees: pipe(context.fees, value, loading),
+          retries: 0,
+        }),
     },
   },
 })
