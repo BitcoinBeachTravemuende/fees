@@ -1,15 +1,23 @@
 <script lang="ts">
   import btcLogo from './assets/btc.svg'
   import './app.css'
-  import { endpoint, fees, send, retries, state } from './state/store'
+  import { actorRef } from './state/store'
   import { foldA, isLoading } from './util/async'
   import { pipe } from 'effect'
+  import { useSelector } from '@xstate/svelte'
+
+  const send = actorRef.send
+  const state = useSelector(actorRef, (s) => s.value)
+  const fees = useSelector(actorRef, (s) => s.context.fees)
+  const endpoint = useSelector(actorRef, (s) => s.context.endpoint)
+  const retries = useSelector(actorRef, (s) => s.context.retries)
+  const ticks = useSelector(actorRef, (s) => s.context.ticks)
 
   $: render = () =>
     pipe(
       $fees,
       foldA(
-        (data) => `pending ${JSON.stringify(data, null, 2)}`,
+        (data) => `initial ${JSON.stringify(data, null, 2)}`,
         (data) => `loading ${JSON.stringify(data, null, 2)}`,
         (data) => `error ${JSON.stringify(data, null, 2)}`,
         (data) => `success ${JSON.stringify(data, null, 2)}`
@@ -34,7 +42,7 @@
       on:click={() => send({ type: 'fees.load' })}
       disabled={isLoading($fees)}
     >
-      load fees ({isLoading($fees)} / {$retries})
+      load fees ({isLoading($fees)} / {$retries} / {$ticks})
     </button>
     <div>--------------</div>
     <div class="">
@@ -42,6 +50,10 @@
     </div>
     <div class="">
       state: {JSON.stringify($state, null, 2)}
+    </div>
+    <div class="">
+      url: {import.meta.env.VITE_URL_MEMPOOL}
+      / mode : {import.meta.env.MODE}
     </div>
     <div>
       {render()}
