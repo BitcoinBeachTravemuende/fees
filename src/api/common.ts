@@ -1,10 +1,9 @@
 import { parseEither } from '@effect/schema/Parser'
-import { Config as C, Effect as E, Effect, pipe } from 'effect'
+import { Effect as E, Effect, pipe } from 'effect'
 import * as S from '@effect/schema/Schema'
 import type { GetFeeError, Fees } from '../types'
-import * as M from './mempool'
 
-const fetchFees = (url: string): E.Effect<never, Error, Response> =>
+const fetchFees = (url: URL): E.Effect<never, Error, Response> =>
   E.tryPromise({
     try: () => fetch(url),
     catch: (unknown) => new Error(`Could not fetch fees ${unknown}`),
@@ -21,7 +20,7 @@ export const getFees = <T>({
   schema,
   toFees,
 }: {
-  url: C.Config<string>
+  url: E.Effect<never, Error, URL>
   schema: S.Schema<T>
   toFees: (fees: T) => E.Effect<never, never, Fees>
 }): E.Effect<never, GetFeeError, Fees> =>
@@ -33,9 +32,3 @@ export const getFees = <T>({
     E.flatMap(toFees),
     E.tap((f) => Effect.log(`fees ${JSON.stringify(f, null, 2)}`))
   )
-
-export const getMempoolFees = getFees({
-  url: M.url,
-  schema: M.Fees,
-  toFees: M.toFees,
-})

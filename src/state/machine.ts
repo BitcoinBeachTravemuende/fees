@@ -11,7 +11,8 @@ import {
   success,
   value,
 } from '../util/async'
-import { getMempoolFees } from '../api'
+import { getFees as getMempoolFees } from '../api/mempool'
+import { getFees as getEsploraFees } from '../api/esplora'
 
 const MAX_RETRIES = 2
 const INTERVAL_MS = 1000
@@ -34,8 +35,14 @@ export const machine = setup({
     fetchFeesActor: fromPromise(
       async ({ input }: { input: { endpoint: Endpoint } }) => {
         console.log('ACTOR fetchFees:', input.endpoint)
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        return Effect.runPromise(getMempoolFees)
+        switch (input.endpoint) {
+          case 'mempool':
+            return Effect.runPromise(getMempoolFees)
+          // case 'rpc':
+          //   return Effect.runPromise(getRpcExplorerFees)
+          case 'esplora':
+            return Effect.runPromise(getEsploraFees)
+        }
       }
     ),
     tickActor: fromCallback<
@@ -126,6 +133,15 @@ export const machine = setup({
   },
   // TODO: Loading fees in 'idle' state only?
   on: {
+    'endpoint.change': {
+      target: '.loading',
+      actions: assign(({ context, event }) => ({
+        fees: pipe(context.fees, value, loading),
+        endpoint: event.endpoint,
+        retries: 0,
+        ticks: 0,
+      })),
+    },
     'fees.load': {
       target: '.loading',
       actions: assign(({ context }) => ({

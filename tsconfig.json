@@ -19,7 +19,6 @@
      * of JS in `.svelte` files.
      */
     "allowJs": false,
-    "checkJs": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
