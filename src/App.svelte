@@ -1,7 +1,7 @@
 <script lang="ts">
   import btcLogo from './assets/btc.svg'
   import './app.css'
-  import { actorRef } from './state/store'
+  import { actorRef, MAX_TICK_MS, INTERVAL_MS } from './state/store'
   import { foldA, isLoading } from './util/async'
   import { pipe } from 'effect'
   import { useSelector } from '@xstate/svelte'
@@ -25,6 +25,8 @@
       )
     )
 
+  $: percent = Math.round(($ticks * INTERVAL_MS * 100) / MAX_TICK_MS)
+
   const onChangeEndpoint = (e: Event) => {
     const value = (e.currentTarget as HTMLSelectElement).value
     // type check
@@ -41,9 +43,12 @@
       fees
     </h1>
     <div class="flex items-center">
-      <select class="" on:change={onChangeEndpoint}>
+      <select
+        class="select select-ghost select-lg focus:border-none focus:outline-none"
+        on:change={onChangeEndpoint}
+      >
         {#each ENDPOINTS as ep}
-          <option value={ep} selected={ep === $endpoint} class="select">
+          <option value={ep} selected={ep === $endpoint} class="bg-transparent">
             {ep.toUpperCase()}
           </option>
         {/each}
@@ -84,6 +89,14 @@
     </div>
     <div>
       {render()}
+    </div>
+    <div
+      class="border-gray-40 radial-progress border-2 bg-gray-100 text-xs text-transparent"
+      class:text-orange-500={percent > 0}
+      style="--value:{percent}; --size:3rem; --thickness: 4px;"
+      role="progressbar"
+    >
+      <span class="text-gray-500">{percent}%</span>
     </div>
   </section>
   <footer class="flex justify-center px-4 py-2">footer</footer>
