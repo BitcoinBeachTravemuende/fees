@@ -6,23 +6,23 @@ import { urlWithDefault } from '../util/url'
 import * as C from './common'
 
 const url = urlWithDefault(
-  import.meta.env.VITE_URL_MEMPOOL,
-  'https://mempool.space/api/v1/fees/recommended'
+  import.meta.env.VITE_URL_RPC_EXPLORER,
+  'https://bitcoinexplorer.org/api/mempool/fees'
 )
 
 const Fees = S.struct({
-  fastestFee: S.number,
-  halfHourFee: S.number,
-  hourFee: S.number,
+  nextBlock: S.number,
+  '30min': S.number,
+  '60min': S.number,
 })
 
 type Fees = S.Schema.To<typeof Fees>
 
 const toFees = (fees: Fees): E.Effect<never, never, App.Fees> =>
   E.succeed({
-    fast: fees.fastestFee,
-    medium: fees.halfHourFee,
-    slow: fees.hourFee,
+    fast: fees.nextBlock,
+    medium: fees['30min'],
+    slow: fees['60min'],
   })
 
 export const getFees = C.getFees({

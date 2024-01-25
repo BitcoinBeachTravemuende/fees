@@ -3,7 +3,15 @@ import * as S from '@effect/schema/Schema'
 import type { ConfigError } from 'effect/ConfigError'
 import type { AsyncData } from './util/async'
 
-export type Endpoint = 'mempool' | 'rpc' | 'esplora'
+export const ENDPOINTS = ['mempool', 'esplora'] as const
+export type Endpoint = (typeof ENDPOINTS)[number]
+
+// type guard
+export const isEndpoint = (value: string): value is Endpoint =>
+  ENDPOINTS.map(
+    // Endpoint -> string
+    (e) => e.toString()
+  ).includes(value)
 
 export const Fees = S.struct({
   fast: S.number,
