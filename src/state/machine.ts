@@ -13,10 +13,9 @@ import {
 } from '../util/async'
 import { getFees as getMempoolFees } from '../api/mempool'
 import { getFees as getEsploraFees } from '../api/esplora'
+import { INTERVAL_MS, MAX_TICK_MS } from './store'
 
 const MAX_RETRIES = 2
-const INTERVAL_MS = 1000
-const MAX_TICK_MS = 3000
 
 export const machine = setup({
   types: {} as {
@@ -62,16 +61,8 @@ export const machine = setup({
     checkRetry: ({ context }) => context.retries < MAX_RETRIES,
     checkLastRetry: ({ context }) => context.retries >= MAX_RETRIES,
     hasFeesLoaded: ({ context }) => isSuccess(context.fees),
-    checkTick: ({ context }) => {
-      const check = context.ticks * INTERVAL_MS < MAX_TICK_MS
-      console.log('checkTick', check)
-      return check
-    },
-    checkMaxTick: ({ context }) => {
-      const check = context.ticks * INTERVAL_MS >= MAX_TICK_MS
-      console.log('checkMaxTick', check)
-      return check
-    },
+    checkTick: ({ context }) => context.ticks * INTERVAL_MS < MAX_TICK_MS,
+    checkMaxTick: ({ context }) => context.ticks * INTERVAL_MS >= MAX_TICK_MS,
   },
   actions: {},
 }).createMachine({
@@ -155,7 +146,6 @@ export const machine = setup({
         guard: 'checkMaxTick',
         target: '.loading',
         actions: [
-          () => console.log('max tick'),
           assign(({ context }) => ({
             fees: pipe(context.fees, value, loading),
             ticks: 0,
@@ -165,7 +155,6 @@ export const machine = setup({
       {
         guard: 'checkTick',
         actions: [
-          () => console.log('next tick'),
           assign({
             ticks: ({ context }) => context.ticks + 1,
           }),
