@@ -2,30 +2,36 @@
   import btcLogo from './assets/btc.svg'
   import './app.css'
   import { actorRef, MAX_TICK_MS, INTERVAL_MS } from './state/store'
-  import { foldA, isLoading } from './util/async'
-  import { pipe } from 'effect'
+  import { value } from './util/async'
+  import { pipe, Option as O } from 'effect'
   import { useSelector } from '@xstate/svelte'
-  import { ENDPOINTS, isEndpoint } from './types'
+  import { ENDPOINTS, Fees, isEndpoint } from './types'
+  import Fee from './component/Fee.svelte'
 
   const send = actorRef.send
-  const state = useSelector(actorRef, (s) => s.value)
   const fees = useSelector(actorRef, (s) => s.context.fees)
   const endpoint = useSelector(actorRef, (s) => s.context.endpoint)
-  const retries = useSelector(actorRef, (s) => s.context.retries)
   const ticks = useSelector(actorRef, (s) => s.context.ticks)
 
-  $: render = () =>
-    pipe(
-      $fees,
-      foldA(
-        (data) => `initial ${data ? JSON.stringify(data, null, 2) : ''}`,
-        (data) => `loading ${data ? JSON.stringify(data, null, 2) : ''}`,
-        (data) => `error ${JSON.stringify(data, null, 2)}`,
-        (data) => `success ${JSON.stringify(data, null, 2)}`
-      )
-    )
-
   $: percent = Math.round(($ticks * INTERVAL_MS * 100) / MAX_TICK_MS)
+
+  // helper to map fees into values that can be rendered with <Fee />
+  $: feesToRender = pipe(
+    $fees,
+    value,
+    O.map((fees) => ({
+      fast: Math.round(fees.fast),
+      medium: Math.round(fees.medium),
+      slow: Math.round(fees.slow),
+    })),
+    O.getOrElse<Fees>(() => ({ fast: 0, medium: 0, slow: 0 })),
+    // map into array - needed to use #each
+    (v): Array<{ type: keyof Fees; value: number }> => [
+      { type: 'fast', value: v.fast },
+      { type: 'medium', value: v.medium },
+      { type: 'slow', value: v.slow },
+    ]
+  )
 
   const onChangeEndpoint = (e: Event) => {
     const value = (e.currentTarget as HTMLSelectElement).value
@@ -53,50 +59,61 @@
           </option>
         {/each}
       </select>
-      <div class="ml-2">settings</div>
+      <button class="ml-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="h-6 w-6 text-gray-500"
+          ><path
+            fill="currentColor"
+            d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zM11 20h1.975l.35-2.65q.775-.2 1.438-.587t1.212-.938l2.475 1.025l.975-1.7l-2.15-1.625q.125-.35.175-.737T17.5 12q0-.4-.05-.787t-.175-.738l2.15-1.625l-.975-1.7l-2.475 1.05q-.55-.575-1.212-.962t-1.438-.588L13 4h-1.975l-.35 2.65q-.775.2-1.437.588t-1.213.937L5.55 7.15l-.975 1.7l2.15 1.6q-.125.375-.175.75t-.05.8q0 .4.05.775t.175.75l-2.15 1.625l.975 1.7l2.475-1.05q.55.575 1.213.963t1.437.587zm1.05-4.5q1.45 0 2.475-1.025T15.55 12q0-1.45-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12q0 1.45 1.013 2.475T12.05 15.5M12 12"
+          /></svg
+        >
+      </button>
     </div>
   </header>
+
   <section class="flex min-h-64 flex-grow flex-col items-center justify-center">
-    <div class="flex space-x-2">
-      <button
-        class="mt-10"
+    <div class="my-20 grid grid-cols-2 gap-x-3 gap-y-6">
+      {#each feesToRender as { type, value }}
+        <Fee {type} {value} />
+      {/each}
+    </div>
+
+    <div class="group relative h-12 w-12">
+      <div
+        class="h-full w-full rounded-full border-[2px] border-gray-400"
+      ></div>
+
+      <div
+        class="radial-progress absolute inset-0 bg-white text-xs text-transparent"
+        class:text-orange-400={percent > 0}
+        style="--value:{percent}; --size:3rem; --thickness: 2px;"
+        role="progressbar"
+      >
+        {#if percent > 0}
+          <span class="text-xs text-gray-400">{percent}%</span>
+        {/if}
+      </div>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div
+        class="absolute inset-[2px] flex cursor-pointer items-center justify-center
+        rounded-full border-2 border-transparent bg-gray-50 opacity-0 group-hover:opacity-100"
         on:click={() => send({ type: 'fees.load' })}
-        disabled={isLoading($fees)}
+        aria-label="Refresh fees"
+        title="Refresh fees"
       >
-        load fees ({isLoading($fees)} / {$retries} / {$ticks})
-      </button>
-      <button
-        class="mt-10"
-        on:click={() => send({ type: 'endpoint.change', endpoint: 'esplora' })}
-        disabled={isLoading($fees)}
-      >
-        esplora
-      </button>
-      <button
-        class="mt-10"
-        on:click={() => send({ type: 'endpoint.change', endpoint: 'mempool' })}
-        disabled={isLoading($fees)}
-      >
-        mempool
-      </button>
-    </div>
-    <div>--------------</div>
-    <div class="">
-      {JSON.stringify($fees, null, 2)}
-    </div>
-    <div class="">
-      state: {JSON.stringify($state, null, 2)}
-    </div>
-    <div>
-      {render()}
-    </div>
-    <div
-      class="border-gray-40 radial-progress border-2 bg-gray-100 text-xs text-transparent"
-      class:text-orange-500={percent > 0}
-      style="--value:{percent}; --size:3rem; --thickness: 4px;"
-      role="progressbar"
-    >
-      <span class="text-gray-500">{percent}%</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="h-7 w-7 text-gray-400"
+          ><path
+            fill="currentColor"
+            d="M12.077 19q-2.931 0-4.966-2.033q-2.034-2.034-2.034-4.964q0-2.93 2.034-4.966Q9.146 5 12.077 5q1.783 0 3.338.847q1.556.847 2.508 2.365V5h1v5.23h-5.23v-1h3.7q-.781-1.495-2.198-2.363Q13.78 6 12.077 6q-2.5 0-4.25 1.75T6.077 12q0 2.5 1.75 4.25t4.25 1.75q1.925 0 3.475-1.1t2.175-2.9h1.061q-.661 2.246-2.513 3.623T12.077 19"
+          /></svg
+        >
+      </div>
     </div>
   </section>
   <footer class="flex justify-center px-4 py-2">footer</footer>
