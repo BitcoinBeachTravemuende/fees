@@ -2,11 +2,13 @@
   import btcLogo from './assets/btc.svg'
   import './app.css'
   import { actorRef, MAX_TICK_MS, INTERVAL_MS } from './state/store'
-  import { value } from './util/async'
+  import * as AS from './util/async'
   import { pipe, Option as O } from 'effect'
   import { useSelector } from '@xstate/svelte'
   import { ENDPOINTS, Fees, isEndpoint } from './types'
   import Fee from './component/Fee.svelte'
+  import { twMerge } from 'tailwind-merge'
+  import { onMount } from 'svelte'
 
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
@@ -18,7 +20,7 @@
   // helper to map fees into values that can be rendered with <Fee />
   $: feesToRender = pipe(
     $fees,
-    value,
+    AS.value,
     O.map((fees) => ({
       fast: Math.round(fees.fast),
       medium: Math.round(fees.medium),
@@ -40,81 +42,123 @@
       send({ type: 'endpoint.change', endpoint: value })
     }
   }
+
+  onMount(() => {
+    // load fees at start
+    send({ type: 'fees.load' })
+  })
 </script>
 
 <main class="flex h-screen flex-col">
-  <header class="flex w-full place-content-between items-center px-4 py-2">
-    <h1 class="flex items-center text-2xl font-bold">
-      <img src={btcLogo} class="mr-1 h-7 w-7" alt="BTC Logo" />
-      fees
+  <header
+    class="flex w-full place-content-between items-center px-4 py-2 md:py-4"
+  >
+    <h1 class="flex items-center">
+      <img src={btcLogo} class="mr-1 h-6 w-6 md:h-6 md:w-8" alt="BTC Logo" />
+      <div class="text-nowrap text-2xl font-bold md:text-3xl">
+        fees <span class="text-sm font-normal text-gray-500 md:text-sm"
+          >sat/vB</span
+        >
+      </div>
     </h1>
     <div class="flex items-center">
       <select
-        class="select select-ghost select-lg focus:border-none focus:outline-none"
+        class="select select-ghost select-md text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none"
         on:change={onChangeEndpoint}
       >
         {#each ENDPOINTS as ep}
-          <option value={ep} selected={ep === $endpoint} class="bg-transparent">
-            {ep.toUpperCase()}
+          <option value={ep} selected={ep === $endpoint}>
+            {ep}
           </option>
         {/each}
       </select>
-      <button class="ml-2">
+      <!-- <button class="group" title="settings">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="h-6 w-6 text-gray-500"
+          class="ease h-6 w-6 text-gray-400 group-hover:rotate-180 group-hover:text-gray-600"
           ><path
             fill="currentColor"
             d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zM11 20h1.975l.35-2.65q.775-.2 1.438-.587t1.212-.938l2.475 1.025l.975-1.7l-2.15-1.625q.125-.35.175-.737T17.5 12q0-.4-.05-.787t-.175-.738l2.15-1.625l-.975-1.7l-2.475 1.05q-.55-.575-1.212-.962t-1.438-.588L13 4h-1.975l-.35 2.65q-.775.2-1.437.588t-1.213.937L5.55 7.15l-.975 1.7l2.15 1.6q-.125.375-.175.75t-.05.8q0 .4.05.775t.175.75l-2.15 1.625l.975 1.7l2.475-1.05q.55.575 1.213.963t1.437.587zm1.05-4.5q1.45 0 2.475-1.025T15.55 12q0-1.45-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12q0 1.45 1.013 2.475T12.05 15.5M12 12"
           /></svg
         >
-      </button>
+      </button> -->
     </div>
   </header>
 
-  <section class="flex min-h-64 flex-grow flex-col items-center justify-center">
-    <div class="my-20 grid grid-cols-2 gap-x-3 gap-y-6">
+  <section class="flex flex-grow flex-col items-center justify-center">
+    <div class="my-24 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
       {#each feesToRender as { type, value }}
-        <Fee {type} {value} />
+        <Fee
+          {type}
+          {value}
+          loading={AS.isLoading($fees) || AS.isInitial($fees)}
+        />
       {/each}
     </div>
 
-    <div class="group relative h-12 w-12">
+    <button
+      class="group relative h-12 w-12 md:h-14 md:w-14"
+      title="Refresh fees"
+      on:click={() => send({ type: 'fees.load' })}
+      disabled={AS.isLoading($fees)}
+    >
       <div
-        class="h-full w-full rounded-full border-[2px] border-gray-400"
+        class="h-full w-full rounded-full border-[2px] border-gray-200"
       ></div>
 
       <div
-        class="radial-progress absolute inset-0 bg-white text-xs text-transparent"
-        class:text-orange-400={percent > 0}
-        style="--value:{percent}; --size:3rem; --thickness: 2px;"
+        class="radial-progress absolute inset-x-0 inset-y-0 h-12 w-12 text-xs text-transparent md:h-14 md:w-14"
+        class:progressColor={percent > 0}
+        style="--value:{percent}; --thickness: 2px;"
         role="progressbar"
       >
         {#if percent > 0}
           <span class="text-xs text-gray-400">{percent}%</span>
         {/if}
       </div>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
-        class="absolute inset-[2px] flex cursor-pointer items-center justify-center
-        rounded-full border-2 border-transparent bg-gray-50 opacity-0 group-hover:opacity-100"
-        on:click={() => send({ type: 'fees.load' })}
-        aria-label="Refresh fees"
-        title="Refresh fees"
+        class={twMerge(
+          'absolute inset-x-[4px] inset-y-[4px]',
+          'flex items-center justify-center',
+          'rounded-full border-2 border-transparent bg-gray-300 group-hover:bg-orange-400 group-hover:opacity-100',
+          'ease',
+          percent > 0 && 'opacity-0'
+        )}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="h-7 w-7 text-gray-400"
+          class="ease h-7 w-7 text-white group-hover:rotate-180"
           ><path
             fill="currentColor"
             d="M12.077 19q-2.931 0-4.966-2.033q-2.034-2.034-2.034-4.964q0-2.93 2.034-4.966Q9.146 5 12.077 5q1.783 0 3.338.847q1.556.847 2.508 2.365V5h1v5.23h-5.23v-1h3.7q-.781-1.495-2.198-2.363Q13.78 6 12.077 6q-2.5 0-4.25 1.75T6.077 12q0 2.5 1.75 4.25t4.25 1.75q1.925 0 3.475-1.1t2.175-2.9h1.061q-.661 2.246-2.513 3.623T12.077 19"
           /></svg
         >
       </div>
-    </div>
+    </button>
   </section>
-  <footer class="flex justify-center px-4 py-2">footer</footer>
+
+  <footer class="mt-20 flex flex-col items-center p-4 text-gray-400">
+    <aside class="flex items-center text-xs md:text-sm">
+      <a
+        href="https://github.com/BitcoinBeachTravemuende/fees/"
+        class="underline"
+      >
+        Open Source
+      </a>. Made with
+      <span class="mx-1 text-base text-orange-400">♥</span> in Travemünde.
+    </aside>
+  </footer>
 </main>
+
+<style>
+  /* 
+    progress color needs to be defined here, 
+    because `class:text-orange-400` won't be included
+    if this tailwind class is not used anywhere else
+  */
+  .progressColor {
+    @apply text-orange-400;
+  }
+</style>
