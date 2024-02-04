@@ -1,6 +1,7 @@
-import { assign, not, setup } from 'xstate'
+import { assign, fromPromise, setup } from 'xstate'
 
-import { isValidUrl } from '../util/url'
+import { validateUrl } from '../util/url'
+import { Effect, pipe } from 'effect'
 
 export const machine = setup({
   types: {} as {
@@ -12,11 +13,15 @@ export const machine = setup({
     context: {
       url: URL
       enteredValue: string
+      errorMsg: string
     }
     input: { url: URL }
   },
-  guards: {
-    validateValue: ({ context }) => isValidUrl(context.enteredValue),
+  actors: {
+    validateValue: fromPromise(
+      async ({ input }: { input: { value: string } }) =>
+        pipe(input.value, validateUrl, Effect.runPromise)
+    ),
   },
   actions: {
     onSaveHandler: (_, params: { url: URL }) => {
@@ -28,6 +33,7 @@ export const machine = setup({
   context: ({ input }) => ({
     url: input.url,
     enteredValue: input.url.toString(),
+    errorMsg: '',
   }),
 
   initial: 'idle',
@@ -38,48 +44,52 @@ export const machine = setup({
       },
     },
     edit: {
-      initial: 'editing',
-      states: {
-        editing: {},
-        invalid: {},
-      },
+      initial: 'valid',
       on: {
         cancel: {
-          target: 'idle',
+          target: '#editableUrlM.idle',
           actions: assign(({ context }) => ({
-            ...context,
             enteredValue: context.url.toString(),
           })),
         },
-        save: [
-          {
-            guard: not('validateValue'),
-            target: '.invalid',
-          },
-          {
-            guard: 'validateValue',
-            target: '#editableUrlM.saved',
-            actions: [
-              assign(({ context }) => ({
-                ...context,
-                url: new URL(context.enteredValue),
-              })),
-              {
-                type: 'onSaveHandler',
-                params: ({ context }) => ({
-                  url: new URL(context.enteredValue),
-                }),
-              },
-            ],
-          },
-        ],
+
         updated: {
-          target: '.editing',
-          actions: assign(({ context, event }) => ({
-            ...context,
+          target: '.validating',
+          actions: assign(({ event }) => ({
             enteredValue: event.data.value,
           })),
         },
+      },
+      states: {
+        validating: {
+          invoke: {
+            input: ({ context: { enteredValue } }) => ({
+              value: enteredValue,
+            }),
+            src: 'validateValue',
+            onDone: 'valid',
+            onError: {
+              target: 'invalid',
+              actions: assign(({ event }) => {
+                const error = event.error as unknown as Error
+                return {
+                  errorMsg: error?.message ?? error.toString(),
+                }
+              }),
+            },
+          },
+        },
+        valid: {
+          on: {
+            save: {
+              target: '#editableUrlM.saved',
+              actions: assign(({ context }) => ({
+                url: new URL(context.enteredValue),
+              })),
+            },
+          },
+        },
+        invalid: {},
       },
     },
     saved: {

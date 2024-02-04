@@ -6,15 +6,6 @@ export const validateUrl = (url: string): Effect.Effect<never, Error, URL> =>
     catch: () => Error(`Invalid url "${url}" `),
   })
 
-export const isValidUrl = (url: string) =>
-  Effect.runSync(
-    pipe(
-      validateUrl(url),
-      Effect.map<URL, boolean>(() => true),
-      Effect.orElse(() => Effect.sync(() => false))
-    )
-  )
-
 export const urlWithDefault = (
   url: string,
   defaultValue: string

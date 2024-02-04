@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { isValidUrl, urlWithDefault, validateUrl } from './url'
+import { urlWithDefault } from './url'
 import { Effect, pipe } from 'effect'
 
 test('valid url -> no default', async () => {
@@ -22,11 +22,4 @@ test('invalid url -> invalid default', async () => {
   await expect(
     pipe(urlWithDefault('888', '222'), Effect.runPromise)
   ).rejects.toThrow()
-})
-
-test('isValidUrl -> true', () => {
-  expect(isValidUrl('https://google.com')).toBeTruthy()
-})
-test('isValidUrl -> false', () => {
-  expect(isValidUrl('google.com')).toBeFalsy()
 })
