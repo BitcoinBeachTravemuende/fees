@@ -2,7 +2,7 @@ import { assign, fromCallback, fromPromise, setup } from 'xstate'
 
 import { Effect, Option as O, pipe } from 'effect'
 
-import type { Endpoint, FeesAsync, GetFeeError } from '../types'
+import type { Endpoint, EndpointMap, FeesAsync, GetFeeError } from '../types'
 import {
   fail,
   initial,
@@ -25,21 +25,21 @@ export const machine = setup({
       | { type: 'endpoint.change'; endpoint: Endpoint }
       | { type: 'endpoint.update'; data: { endpoint: Endpoint; url: URL } }
     context: {
-      endpoint: Endpoint
-      url: URL
+      selectedEndpoint: Endpoint
+      endpoints: EndpointMap
       ticks: number
       fees: FeesAsync
       retries: number
     }
     input: {
-      url: URL
-      endpoint: Endpoint
+      endpoints: EndpointMap
+      selectedEndpoint: Endpoint
     }
   },
   actors: {
     fetchFeesActor: fromPromise(
       async ({ input }: { input: { endpoint: Endpoint; url: URL } }) => {
-        console.log('ACTOR fetchFees:', input.endpoint)
+        console.log('ACTOR fetchFees:', input.endpoint, input.url.toString())
         switch (input.endpoint) {
           case 'mempool':
             return Effect.runPromise(getMempoolFees(input.url))
@@ -72,11 +72,10 @@ export const machine = setup({
   },
   actions: {},
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMAOqDEYB2FUHsBLbAFwDoBjAC2WxgG0AGAXUVANkJMP2zZAAeiAKwB2ADQgAnogAcARjLDGKxqOEAmACyyAzFtGiAvkclpMAMzBwyAG3zIITVkhAcuPPq6EIxkmQha8hpkAJzCuvK6sgBsoaGGshomZugYVjbcFADWzvzu3Lz8Pn7SIoyyYYwx8rKhGurCwrJaKSDm6dawZFm58i7s+JyFXqA+NTFk8sIxGprRuowaS-6IMbqTssL1uqFbUdHGpu3odg4QxFAYELxgZMQAbvjZd+ZnjpcIj-gUyCPOeVcBU8xTkoi0ZC0MViGiS8lEW3CqwQsN0kIi8lmjC09VCul0bTe9g+dCwACcyfgyWRULY-hYqQBbMhE86fb6-f4sQGDYYg7yISLCMIaWoxJryRjCeRaDTIjTaMKicWiOaLWXSgnHVkkq5gClUml0kgMsnMnUXOhfbBPTmeAH9fJDDxFAUIWTgyHQ2ZwhHbYTI3TKyHVOaaUJSsTJbWnMlgEhkqQYASwEh-V4WEj6gAUACUAKIAFVzAE0APoAEXzABkAIIlgCUGDecYTUh5bmdI1BCCFIrFEqlMrlZV78JFCS0mjUFXCJmO2HwEDg-HMTr5rrGiFCyIAtDFCadCBBbGB1y7RoJEMFhBDthsgnFZCplYG9lNdA0WkEkkFMYfUB6Qgcn1c9uzdG87zxGJHz2F8YnlBQyBiURQmheRMT2GD5AA95LSgMD+S3BAYMqepam0SjUO0eVwgnURMQUZRalw1tE0IzcrwQWoyNFWQYXidQMNkeVNDIWFSKlLRGBvLUTCAA */
   id: 'app',
   context: ({ input }) => ({
-    endpoint: input.endpoint,
-    url: input.url,
+    selectedEndpoint: input.selectedEndpoint,
+    endpoints: input.endpoints,
     fees: initial(O.none()),
     ticks: 0,
     retries: 0,
@@ -97,8 +96,8 @@ export const machine = setup({
       invoke: {
         src: 'fetchFeesActor',
         input: ({ context }) => ({
-          endpoint: context.endpoint,
-          url: context.url,
+          endpoint: context.selectedEndpoint,
+          url: context.endpoints[context.selectedEndpoint],
         }),
         onDone: {
           target: 'ticker',
@@ -139,7 +138,7 @@ export const machine = setup({
       target: '.loading',
       actions: assign(({ context, event }) => ({
         fees: pipe(context.fees, value, loading),
-        endpoint: event.endpoint,
+        selectedEndpoint: event.endpoint,
         retries: 0,
         ticks: 0,
       })),
@@ -149,7 +148,11 @@ export const machine = setup({
       actions: assign(({ context, event }) => ({
         fees: pipe(context.fees, value, loading),
         url: event.data.url,
-        endpoint: event.data.endpoint,
+        selectedEndpoint: event.data.endpoint,
+        endpoints: {
+          ...context.endpoints,
+          [event.data.endpoint]: event.data.url,
+        },
         retries: 0,
         ticks: 0,
       })),

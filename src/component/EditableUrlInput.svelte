@@ -45,6 +45,7 @@
 
   function onSaveHandler() {
     send({ type: 'save' })
+    onSave($snapshot.context.value)
   }
 
   const tvNote = tv({
@@ -120,7 +121,6 @@
         value={$snapshot.context.enteredValue}
         on:input={onChangeHandler}
         on:keydown={(e) => {
-          console.log('e.code', e.code)
           if (e.code === 'Escape') {
             onCancelHandler()
           }
