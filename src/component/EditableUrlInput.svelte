@@ -2,7 +2,7 @@
   import { twMerge } from 'tailwind-merge'
   import { tv } from 'tailwind-variants'
   import { useMachine } from '@xstate/svelte'
-  import { mkMachine } from '../state/editableUrlMachine'
+  import { mkMachine } from './editableInputMachine'
   import { validateUrl } from '../util/url'
 
   export let url: URL
