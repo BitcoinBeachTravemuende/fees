@@ -2,9 +2,11 @@
   import { twMerge } from "tailwind-merge"
   import EditableUrlInput from "./EditableUrlInput.svelte"
   import { fly } from "svelte/transition"
-  import { ENDPOINTS } from "../types"
+  import { entries, type Endpoint, type EndpointMap } from "../types"
 
+  export let endpoints: EndpointMap;
   export let onClose = () => {}
+  export let onUpdateEndpoint = (_: {url: URL, endpoint: Endpoint}) => {}
 
 </script>
 
@@ -30,11 +32,11 @@
     </div>
 
     <div class="">
-        {#each ENDPOINTS as ep}
+        {#each entries(endpoints) as [ep, url]}
         <h3 class="text-gray-600">{ep}</h3>
         <EditableUrlInput
-        url={new URL('https://mempool.space/api/v1/fees/recommended')}
-        onSave={(url) => console.log('saved from APP', url.toString())}
+        url={url}
+        onSave={(url) => onUpdateEndpoint({url, endpoint: ep})}
         class="w-full"
         />
         {/each}

@@ -5,7 +5,7 @@
   import * as AS from './util/async'
   import { pipe, Option as O } from 'effect'
   import { useSelector } from '@xstate/svelte'
-  import { ENDPOINTS, Fees, isEndpoint } from './types'
+  import { Fees, entries, isEndpoint } from './types'
   import Fee from './component/Fee.svelte'
   import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
@@ -14,7 +14,8 @@
 
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
-  const endpoint = useSelector(actorRef, (s) => s.context.endpoint)
+  const endpoint = useSelector(actorRef, (s) => s.context.selectedEndpoint)
+  const endpoints = useSelector(actorRef, (s) => s.context.endpoints)
   const ticks = useSelector(actorRef, (s) => s.context.ticks)
 
   let openSettings = false
@@ -70,7 +71,7 @@
         class="select select-ghost select-md text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none"
         on:change={onChangeEndpoint}
       >
-        {#each ENDPOINTS as ep}
+        {#each entries($endpoints) as [ep]}
           <option value={ep} selected={ep === $endpoint}>
             {ep}
           </option>
@@ -163,14 +164,18 @@
   
   {#if openSettings}
   <!-- cover -->
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
   <div
     transition:fade={{ duration: 100 }}
     class="absolute inset-x-0 inset-y-0 bg-white bg-opacity-80"
     on:click={() => (openSettings = false)}
     ></div>
   <Settings 
+    endpoints={$endpoints}
     open={openSettings} 
-    onClose={() => openSettings = false} />
+    onClose={() => openSettings = false}
+    onUpdateEndpoint={({url, endpoint}) => send({ type: 'endpoint.update', data: {endpoint, url} })}
+    />
   {/if}
 </div>
 

@@ -2,7 +2,7 @@ import { assign, fromCallback, fromPromise, setup } from 'xstate'
 
 import { Effect, Option as O, pipe } from 'effect'
 
-import type { Endpoint, FeesAsync, GetFeeError } from '../types'
+import type { Endpoint, EndpointMap, FeesAsync, GetFeeError } from '../types'
 import {
   fail,
   initial,
@@ -23,24 +23,30 @@ export const machine = setup({
       | { type: 'fees.load' }
       | { type: 'fees.tick' }
       | { type: 'endpoint.change'; endpoint: Endpoint }
+      | { type: 'endpoint.update'; data: { endpoint: Endpoint; url: URL } }
     context: {
-      endpoint: Endpoint
+      selectedEndpoint: Endpoint
+      endpoints: EndpointMap
       ticks: number
       fees: FeesAsync
       retries: number
     }
+    input: {
+      endpoints: EndpointMap
+      selectedEndpoint: Endpoint
+    }
   },
   actors: {
     fetchFeesActor: fromPromise(
-      async ({ input }: { input: { endpoint: Endpoint } }) => {
-        console.log('ACTOR fetchFees:', input.endpoint)
+      async ({ input }: { input: { endpoint: Endpoint; url: URL } }) => {
+        console.log('ACTOR fetchFees:', input.endpoint, input.url.toString())
         switch (input.endpoint) {
           case 'mempool':
-            return Effect.runPromise(getMempoolFees)
+            return Effect.runPromise(getMempoolFees(input.url))
           // case 'rpc':
           //   return Effect.runPromise(getRpcExplorerFees)
           case 'esplora':
-            return Effect.runPromise(getEsploraFees)
+            return Effect.runPromise(getEsploraFees(input.url))
         }
       }
     ),
@@ -67,12 +73,13 @@ export const machine = setup({
   actions: {},
 }).createMachine({
   id: 'app',
-  context: {
-    endpoint: 'mempool',
+  context: ({ input }) => ({
+    selectedEndpoint: input.selectedEndpoint,
+    endpoints: input.endpoints,
     fees: initial(O.none()),
     ticks: 0,
     retries: 0,
-  },
+  }),
 
   initial: 'idle',
   states: {
@@ -88,7 +95,10 @@ export const machine = setup({
     loading: {
       invoke: {
         src: 'fetchFeesActor',
-        input: ({ context }) => ({ endpoint: context.endpoint }),
+        input: ({ context }) => ({
+          endpoint: context.selectedEndpoint,
+          url: context.endpoints[context.selectedEndpoint],
+        }),
         onDone: {
           target: 'ticker',
           actions: assign(({ event }) => ({
@@ -128,7 +138,21 @@ export const machine = setup({
       target: '.loading',
       actions: assign(({ context, event }) => ({
         fees: pipe(context.fees, value, loading),
-        endpoint: event.endpoint,
+        selectedEndpoint: event.endpoint,
+        retries: 0,
+        ticks: 0,
+      })),
+    },
+    'endpoint.update': {
+      target: '.loading',
+      actions: assign(({ context, event }) => ({
+        fees: pipe(context.fees, value, loading),
+        url: event.data.url,
+        selectedEndpoint: event.data.endpoint,
+        endpoints: {
+          ...context.endpoints,
+          [event.data.endpoint]: event.data.url,
+        },
         retries: 0,
         ticks: 0,
       })),

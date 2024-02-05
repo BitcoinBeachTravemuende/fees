@@ -25,8 +25,9 @@ const toFees = (fees: Fees): E.Effect<never, never, App.Fees> =>
     slow: fees['6'],
   })
 
-export const getFees = C.getFees({
-  url,
-  schema: Fees,
-  toFees,
-})
+export const getFees = (url: URL) =>
+  C.getFees({
+    url,
+    schema: Fees,
+    toFees,
+  })
