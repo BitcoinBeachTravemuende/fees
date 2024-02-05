@@ -170,7 +170,9 @@
     ></div>
   <Settings 
     open={openSettings} 
-    onClose={() => openSettings = false} />
+    onClose={() => openSettings = false}
+    onUpdateEndpoint={({url, endpoint}) => send({ type: 'endpoint.update', data: {endpoint, url} })}
+    />
   {/if}
 </div>
 
