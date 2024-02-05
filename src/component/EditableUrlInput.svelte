@@ -48,7 +48,7 @@
   }
 
   const tvNote = tv({
-    base: 'w-full px-2 text-center text-xs text-white',
+    base: 'w-full px-2 py-1 text-center text-xs text-white',
     variants: {
       isError: {
         true: 'bg-error',
@@ -72,7 +72,8 @@
         'group',
         'flex w-full items-center',
         ' gap-x-2 p-2',
-        'border border-transparent hover:border-gray-300',
+        'border border-gray-300',
+        'text-base lg:text-lg'
       ])}
     >
       <button
@@ -105,6 +106,7 @@
       class={twMerge([
         'flex w-full items-center',
         ' gap-x-2 p-2',
+        'text-base lg:text-lg',
         'border hover:border-gray-300 has-[:focus]:border-gray-400',
         'text-gray-600',
         isError ? '!border-error' : '',
