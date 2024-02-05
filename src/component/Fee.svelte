@@ -1,21 +1,29 @@
 <script lang="ts">
   import { tv } from 'tailwind-variants'
   import type { Fees } from '../types'
+  import { fade } from 'svelte/transition'
 
   export let type: keyof Fees
   export let value: number
   export let loading: boolean
 
+  // Since daisy's countdown does support values up to 99 only,
+  // split value into an array of strings, but in reverse order.
+  // Needed to render countdown animation with single elements,
+  // especially to support fee values > 99
+  $: valueStrings = value.toString().split('').reverse()
+
   const tvValue = tv({
-    base: 'countdown justify-self-end text-gray-900 ease col-span-2',
+    // elements need to be rendered in reverse order (see comment at `valueStrings` above)
+    base: 'countdown flex flex-row-reverse single justify-self-end text-gray-900 ease col-span-2 opacity-0 ease',
     variants: {
       size: {
-        fast: 'text-8xl md:text-9xl',
-        medium: 'text-6xl md:text-7xl',
-        slow: 'text-6xl md:text-7xl',
+        fast: 'text-8xl md:text-9xl opacity-100',
+        medium: 'text-6xl md:text-7xl opacity-100',
+        slow: 'text-6xl md:text-7xl opacity-100',
       },
       loading: {
-        true: 'text-gray-300',
+        true: 'text-gray-300 opacity-100',
       },
     },
   })
@@ -57,7 +65,9 @@
 
 {#if value > 0}
   <div class={tvValue({ size: type, loading })}>
-    <span style="--value:{value};"></span>
+    {#each valueStrings as valueString}
+      <span transition:fade style="--value:{valueString};"></span>
+    {/each}
   </div>
 {:else}
   <span
@@ -69,3 +79,13 @@
   <span class={tvLabel({ size: type, loading })}>{type}</span>
   <span class={tvTimeLabel({ size: type, loading })}>{timeLabel[type]}</span>
 </div>
+
+<style lang="postcss">
+  /* 
+    Override daisy's countdown to display single values of 0-9 only
+    Original code https://github.com/saadeghi/daisyui/blob/master/src/components/unstyled/countdown.css
+  */
+  .single > *::before {
+    content: '0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9\A';
+  }
+</style>
