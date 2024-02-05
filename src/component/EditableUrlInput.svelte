@@ -2,23 +2,33 @@
   import { twMerge } from 'tailwind-merge'
   import { tv } from 'tailwind-variants'
   import { useMachine } from '@xstate/svelte'
-  import { machine } from '../state/editableUrlMachine'
+  import { mkMachine } from '../state/editableUrlMachine'
+  import { validateUrl } from '../util/url'
 
   export let url: URL
   export let onSave: (url: URL) => void
 
   const { send, snapshot } = useMachine(
-    machine.provide({
+    mkMachine<URL>().provide({
       actions: {
-        onSaveHandler: (_, params) => onSave(params.url),
+        onSaveHandler: (_, params) => onSave(params.value),
       },
     }),
     {
       input: {
-        url,
+        value: url,
+        toValue: (s: string) => new URL(s),
+        validateValue: (s: string) => validateUrl(s),
       },
     }
   )
+
+  // auto select input if available
+  let inputRef: HTMLInputElement | undefined = undefined
+  $: if (inputRef) inputRef.select()
+
+  $: isError = $snapshot.matches({ edit: 'invalid' })
+  $: isSaved = $snapshot.matches('saved')
 
   function onChangeHandler(event: Event) {
     const _input = event.target as HTMLInputElement
@@ -27,7 +37,6 @@
 
   function onEditHandler(_: Event) {
     send({ type: 'edit' })
-    inputRef?.focus()
   }
 
   function onCancelHandler() {
@@ -35,16 +44,8 @@
   }
 
   function onSaveHandler() {
-    console.log('')
     send({ type: 'save' })
   }
-
-  // auto select input if available
-  let inputRef: HTMLInputElement | undefined = undefined
-  $: if (inputRef) inputRef.select()
-
-  $: isError = $snapshot.matches({ edit: 'invalid' })
-  $: isSaved = $snapshot.matches('saved')
 
   const tvNote = tv({
     base: 'w-full px-2 text-center text-xs text-white',
@@ -82,7 +83,7 @@
         ])}
         on:click={onEditHandler}
       >
-        {$snapshot.context.url}
+        {$snapshot.context.value}
       </button>
       <!-- EDIT -->
       <button
@@ -155,9 +156,14 @@
       >
     </div>
   {/if}
-  {#if isSaved || isError}
+  {#if isSaved}
     <div class={tvNote({ isError, isSaved })}>
-      {isSaved ? 'Saved!' : 'Invalid URL'}
+      {'Saved!'}
+    </div>
+  {/if}
+  {#if isError}
+    <div class={tvNote({ isError, isSaved })}>
+      {$snapshot.context.errorMsg}
     </div>
   {/if}
 </div>

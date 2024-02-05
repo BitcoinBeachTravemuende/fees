@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect'
 export const validateUrl = (url: string): Effect.Effect<never, Error, URL> =>
   Effect.try({
     try: () => new URL(url),
-    catch: () => Error(`Invalid url "${url}" `),
+    catch: () => (!url.length ? Error('Empty url') : Error(`Invalid url`)),
   })
 
 export const urlWithDefault = (
