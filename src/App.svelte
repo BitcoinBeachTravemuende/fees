@@ -9,12 +9,15 @@
   import Fee from './component/Fee.svelte'
   import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
-  import EditableUrlInput from './component/EditableUrlInput.svelte'
+  import Settings from './component/Settings.svelte'
+  import { fade } from 'svelte/transition'
 
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
   const endpoint = useSelector(actorRef, (s) => s.context.endpoint)
   const ticks = useSelector(actorRef, (s) => s.context.ticks)
+
+  let openSettings = false
 
   $: percent = Math.round(($ticks * INTERVAL_MS * 100) / MAX_TICK_MS)
 
@@ -50,7 +53,7 @@
   })
 </script>
 
-<main class="container mx-auto flex h-screen flex-col">
+<div class="container relative mx-auto flex h-screen flex-col">
   <header
     class="flex w-full place-content-between items-center px-4 py-2 md:py-4"
   >
@@ -73,26 +76,26 @@
           </option>
         {/each}
       </select>
-      <!-- <button class="group" title="settings">
+      <button
+        on:click={() => (openSettings = !openSettings)}
+        class="group text-gray-400 hover:text-gray-600"
+        title="settings"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="ease h-6 w-6 text-gray-400 group-hover:rotate-180 group-hover:text-gray-600"
+          class="ease h-6 w-6 text-inherit group-hover:rotate-180"
           ><path
             fill="currentColor"
             d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zM11 20h1.975l.35-2.65q.775-.2 1.438-.587t1.212-.938l2.475 1.025l.975-1.7l-2.15-1.625q.125-.35.175-.737T17.5 12q0-.4-.05-.787t-.175-.738l2.15-1.625l-.975-1.7l-2.475 1.05q-.55-.575-1.212-.962t-1.438-.588L13 4h-1.975l-.35 2.65q-.775.2-1.437.588t-1.213.937L5.55 7.15l-.975 1.7l2.15 1.6q-.125.375-.175.75t-.05.8q0 .4.05.775t.175.75l-2.15 1.625l.975 1.7l2.475-1.05q.55.575 1.213.963t1.437.587zm1.05-4.5q1.45 0 2.475-1.025T15.55 12q0-1.45-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12q0 1.45 1.013 2.475T12.05 15.5M12 12"
           /></svg
         >
-      </button> -->
+      </button>
     </div>
   </header>
 
-  <section class="flex flex-grow flex-col items-center justify-center">
-    <EditableUrlInput
-      url={new URL('https://mempool.space/api/v1/fees/recommended')}
-      onSave={(url) => console.log('saved from APP', url.toString())}
-      class="w-1/2 p-3"
-    />
+  <main class="flex flex-grow flex-col items-center justify-center">
+
     <div class="my-24 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
       {#each feesToRender as { type, value }}
         <Fee
@@ -143,7 +146,7 @@
         >
       </div>
     </button>
-  </section>
+  </main>
 
   <footer class="mt-20 flex flex-col items-center p-4 text-gray-400">
     <aside class="flex items-center text-xs md:text-sm">
@@ -156,7 +159,20 @@
       <span class="mx-1 text-base text-orange-400">♥</span> in Travemünde.
     </aside>
   </footer>
-</main>
+
+  
+  {#if openSettings}
+  <!-- cover -->
+  <div
+    transition:fade={{ duration: 100 }}
+    class="absolute inset-x-0 inset-y-0 bg-white bg-opacity-80"
+    on:click={() => (openSettings = false)}
+    ></div>
+  <Settings 
+    open={openSettings} 
+    onClose={() => openSettings = false} />
+  {/if}
+</div>
 
 <!-- 
   Note: postcss is needed for Tailwind's `@apply`
