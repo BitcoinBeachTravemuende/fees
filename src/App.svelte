@@ -9,6 +9,7 @@
   import Fee from './component/Fee.svelte'
   import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
+  import EditableUrlInput from './component/EditableUrlInput.svelte'
 
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
@@ -49,7 +50,7 @@
   })
 </script>
 
-<main class="flex h-screen flex-col">
+<main class="container mx-auto flex h-screen flex-col">
   <header
     class="flex w-full place-content-between items-center px-4 py-2 md:py-4"
   >
@@ -87,6 +88,11 @@
   </header>
 
   <section class="flex flex-grow flex-col items-center justify-center">
+    <EditableUrlInput
+      url={new URL('https://mempool.space/api/v1/fees/recommended')}
+      onSave={(url) => console.log('saved from APP', url.toString())}
+      class="w-1/2 p-3"
+    />
     <div class="my-24 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
       {#each feesToRender as { type, value }}
         <Fee
@@ -152,7 +158,11 @@
   </footer>
 </main>
 
-<style>
+<!-- 
+  Note: postcss is needed for Tailwind's `@apply`
+  @see https://github.com/sveltejs/language-tools/issues/1512#issuecomment-1146735101
+ -->
+<style lang="postcss">
   /* 
     progress color needs to be defined here, 
     because `class:text-orange-400` won't be included
