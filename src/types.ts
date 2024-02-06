@@ -2,11 +2,17 @@ import type { ParseError } from '@effect/schema/ParseResult'
 import * as S from '@effect/schema/Schema'
 import type { ConfigError } from 'effect/ConfigError'
 import type { AsyncData } from './util/async'
+import { UrlSchema } from './util/url'
 
 export const ENDPOINTS = ['mempool', 'esplora'] as const
-export type Endpoint = (typeof ENDPOINTS)[number]
 
-export type EndpointMap = Record<Endpoint, URL>
+export const EndpointSchema = S.literal(...ENDPOINTS)
+
+export type Endpoint = S.Schema.To<typeof EndpointSchema>
+
+export const EndpointMapSchema = S.record(EndpointSchema, UrlSchema)
+
+export type EndpointMap = S.Schema.To<typeof EndpointMapSchema>
 
 // type guard
 export const isEndpoint = (value: string): value is Endpoint =>

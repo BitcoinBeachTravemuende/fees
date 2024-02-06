@@ -5,10 +5,11 @@ import { Effect as E } from 'effect'
 import { urlWithDefault } from '../util/url'
 import * as C from './common'
 
-const url = urlWithDefault(
-  import.meta.env.VITE_URL_MEMPOOL,
-  'https://mempool.space/api/v1/fees/recommended'
-)
+export const defaultUrl = () =>
+  urlWithDefault(
+    import.meta.env.VITE_URL_MEMPOOL,
+    'https://mempool.space/api/v1/fees/recommended'
+  )
 
 const Fees = S.struct({
   fastestFee: S.number,

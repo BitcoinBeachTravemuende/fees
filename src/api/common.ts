@@ -1,4 +1,3 @@
-import { parseEither } from '@effect/schema/Parser'
 import { Effect as E, pipe } from 'effect'
 import * as S from '@effect/schema/Schema'
 import type { GetFeeError, Fees } from '../types'
@@ -21,14 +20,14 @@ export const getFees = <T>({
   toFees,
 }: {
   url: URL
-  schema: S.Schema<T>
+  schema: S.Schema<never, T>
   toFees: (fees: T) => E.Effect<never, never, Fees>
 }): E.Effect<never, GetFeeError, Fees> =>
   pipe(
     url,
     fetchFees,
     E.flatMap(getJson),
-    E.flatMap(parseEither(schema)),
+    E.flatMap(S.decodeUnknown(schema)),
     E.flatMap(toFees),
     E.tap((f) => E.log(`fees ${JSON.stringify(f, null, 2)}`))
   )
