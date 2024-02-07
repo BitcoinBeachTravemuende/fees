@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest'
-import { Effect, pipe, Option as O } from 'effect'
+import { Effect, pipe } from 'effect'
 
 import { getEndpoints, setEndpoints } from './storage'
 import { KeyValueStore } from '@effect/platform-browser'

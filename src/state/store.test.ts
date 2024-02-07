@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test } from 'vitest'
-import { Effect, pipe, Option as O } from 'effect'
+import { describe, expect, test } from 'vitest'
+import { Effect } from 'effect'
 import { defaultEndpoints } from './store'
 import { KeyValueStore } from '@effect/platform-browser'
 import type { EndpointMap } from '../types'

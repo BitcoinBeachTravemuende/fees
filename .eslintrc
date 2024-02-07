@@ -21,10 +21,13 @@
     "no-console": 1,
     "prettier/prettier": 2,
     "comma-dangle": [2, "always-multiline"],
-    "@typescript-eslint/no-unused-vars": {
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
-    }
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ]
     // 'svelte/rule-name': 'error'
   },
   "overrides": [

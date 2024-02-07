@@ -6,7 +6,7 @@ import {
   type EndpointMap,
 } from './types'
 import * as S from '@effect/schema/Schema'
-import { pipe, Either as E, Effect } from 'effect'
+import { pipe, Effect } from 'effect'
 import { mockEndpointMap, mockEndpointMapJSON } from './test/mocks'
 
 describe('Endpoint', () => {

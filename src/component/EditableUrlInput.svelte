@@ -74,7 +74,7 @@
         'flex w-full items-center',
         ' gap-x-2 p-2',
         'border border-gray-300',
-        'text-base lg:text-lg'
+        'text-base lg:text-lg',
       ])}
     >
       <button
