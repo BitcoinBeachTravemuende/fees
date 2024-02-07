@@ -5,11 +5,10 @@ import { Effect as E } from 'effect'
 import { urlWithDefault } from '../util/url'
 import * as C from './common'
 
+export const DEFAULT_ENDPOINT_URL = 'https://blockstream.info/api/fee-estimates'
+
 export const defaultUrl = () =>
-  urlWithDefault(
-    import.meta.env.VITE_URL_ESPLORA,
-    'https://blockstream.info/api/fee-estimates'
-  )
+  urlWithDefault(import.meta.env.VITE_URL_ESPLORA, DEFAULT_ENDPOINT_URL)
 
 const Fees = S.struct({
   '1': S.number,

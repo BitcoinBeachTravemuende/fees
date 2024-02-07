@@ -7,6 +7,7 @@ import {
 } from './types'
 import * as S from '@effect/schema/Schema'
 import { pipe, Either as E, Effect } from 'effect'
+import { mockEndpointMap, mockEndpointMapJSON } from './test/mocks'
 
 describe('Endpoint', () => {
   test('isEndpoint', () => {
@@ -46,15 +47,18 @@ describe('EndpointSchema', () => {
 })
 
 describe('EndpointMapSchema', () => {
-  const endpointMap: EndpointMap = {
-    mempool: new URL('https://example.com/api/'),
-    esplora: new URL('https://example2.com/api/fees'),
-  }
+  const url1 = 'https://example.com/api/'
+  const url2 = 'https://example2.com/api/fees'
 
-  const endpointMapJSON = {
-    mempool: 'https://example.com/api/',
-    esplora: 'https://example2.com/api/fees',
-  }
+  const endpointMap: EndpointMap = mockEndpointMap({
+    mempool: new URL(url1),
+    esplora: new URL(url2),
+  })
+
+  const endpointMapJSON = mockEndpointMapJSON({
+    mempool: url1,
+    esplora: url2,
+  })
 
   const endpointMapString = JSON.stringify(endpointMapJSON)
 
