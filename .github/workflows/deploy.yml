@@ -36,12 +36,13 @@ jobs:
       - name: Install dependencies
         run: nix develop --command bash -c 'pnpm install'
 
-      - name: Build with VitePress
+      - name: Build
         run: nix develop --command bash -c 'pnpm build && touch dist/.nojekyll'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: artifact
           path: dist
 
   deploy:
@@ -55,3 +56,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        with:
+          artifact_name: artifact
