@@ -5,7 +5,15 @@ import { Effect, pipe } from 'effect'
 export const validateUrl = (url: string): Effect.Effect<never, Error, URL> =>
   Effect.try({
     try: () => new URL(url),
-    catch: () => (!url.length ? Error('Empty url') : Error(`Invalid url`)),
+    catch: () => {
+      if (!url) {
+        return Error('Missing url to validate')
+      } else if (!url.length) {
+        return Error('Empty url')
+      } else {
+        return Error(`Invalid url`)
+      }
+    },
   })
 
 export const urlWithDefault = (
