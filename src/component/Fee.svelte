@@ -6,6 +6,7 @@
   export let type: keyof Fees
   export let value: number
   export let loading: boolean
+  export let error: boolean
 
   // Since daisy's countdown does support values up to 99 only,
   // split value into an array of strings, but in reverse order.
@@ -22,7 +23,7 @@
         medium: 'text-6xl md:text-7xl opacity-100',
         slow: 'text-6xl md:text-7xl opacity-100',
       },
-      loading: {
+      inactive: {
         true: 'text-gray-300 opacity-100',
       },
     },
@@ -36,7 +37,7 @@
         medium: 'text-lg md:text-2xl',
         slow: 'text-lg md:text-2xl',
       },
-      loading: {
+      inactive: {
         true: 'text-gray-300',
       },
     },
@@ -50,7 +51,7 @@
         medium: 'text-sm md:text-base',
         slow: 'text-sm md:text-base',
       },
-      loading: {
+      inactive: {
         true: 'text-gray-200',
       },
     },
@@ -63,21 +64,27 @@
   }
 </script>
 
-{#if value > 0}
-  <div class={tvValue({ size: type, loading })}>
-    {#each valueStrings as valueString}
-      <span transition:fade style="--value:{valueString};"></span>
-    {/each}
-  </div>
-{:else}
-  <span
-    class="loading loading-dots loading-lg col-span-2 self-end justify-self-center text-gray-200"
-  ></span>
+{#if !error}
+  {#if value > 0}
+    <div class={tvValue({ size: type, inactive: loading })}>
+      {#each valueStrings as valueString}
+        <span transition:fade style="--value:{valueString};"></span>
+      {/each}
+    </div>
+  {:else}
+    <span
+      class="loading loading-dots loading-lg col-span-2 self-end justify-self-center text-gray-200"
+    ></span>
+  {/if}
+{:else}<p class={tvValue({ size: type, inactive: error })}>0</p>
 {/if}
 
 <div class="flex flex-col items-start self-center">
-  <span class={tvLabel({ size: type, loading })}>{type}</span>
-  <span class={tvTimeLabel({ size: type, loading })}>{timeLabel[type]}</span>
+  <span class={tvLabel({ size: type, inactive: loading || error })}>{type}</span
+  >
+  <span class={tvTimeLabel({ size: type, inactive: loading || error })}
+    >{timeLabel[type]}</span
+  >
 </div>
 
 <style lang="postcss">

@@ -4,7 +4,7 @@ import type { ConfigError } from 'effect/ConfigError'
 import type { AsyncData } from './util/async'
 import { UrlSchema } from './util/url'
 
-export const ENDPOINTS = ['mempool', 'esplora'] as const
+export const ENDPOINTS = ['mempool', 'esplora', 'rpc-explorer'] as const
 
 export const EndpointSchema = S.literal(...ENDPOINTS)
 

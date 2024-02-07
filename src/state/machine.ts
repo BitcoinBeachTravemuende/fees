@@ -13,6 +13,7 @@ import {
 } from '../util/async'
 import { getFees as getMempoolFees } from '../api/mempool'
 import { getFees as getEsploraFees } from '../api/esplora'
+import { getFees as getRpcExplorerFees } from '../api/rpc-explorer'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { setEndpoints } from '../util/storage'
 import { KeyValueStore } from '@effect/platform-browser'
@@ -47,12 +48,11 @@ export const machine = setup({
   actors: {
     fetchFeesActor: fromPromise(
       async ({ input }: { input: { endpoint: Endpoint; url: URL } }) => {
-        console.log('ACTOR fetchFees:', input.endpoint, input.url.toString())
         switch (input.endpoint) {
           case 'mempool':
             return Effect.runPromise(getMempoolFees(input.url))
-          // case 'rpc':
-          //   return Effect.runPromise(getRpcExplorerFees)
+          case 'rpc-explorer':
+            return Effect.runPromise(getRpcExplorerFees(input.url))
           case 'esplora':
             return Effect.runPromise(getEsploraFees(input.url))
         }

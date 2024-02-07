@@ -5,10 +5,11 @@ import { Effect as E } from 'effect'
 import { urlWithDefault } from '../util/url'
 import * as C from './common'
 
-const url = urlWithDefault(
-  import.meta.env.VITE_URL_RPC_EXPLORER,
+export const DEFAULT_ENDPOINT_URL =
   'https://bitcoinexplorer.org/api/mempool/fees'
-)
+
+export const defaultUrl = () =>
+  urlWithDefault(import.meta.env.VITE_URL_RPC_EXPLORER, DEFAULT_ENDPOINT_URL)
 
 const Fees = S.struct({
   nextBlock: S.number,

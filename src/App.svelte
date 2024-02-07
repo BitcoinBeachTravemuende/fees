@@ -72,9 +72,15 @@
         on:change={onChangeEndpoint}
       >
         {#each entries($endpoints) as [ep]}
-          <option value={ep} selected={ep === $endpoint}>
-            {ep}
-          </option>
+          <!-- 
+            FIXME: Remove rpc explorer from endpoints? 
+            It can't be accessed due CORS errors "cors missing allow origin"  
+          -->
+          {#if ep !== 'rpc-explorer'}
+            <option value={ep} selected={ep === $endpoint}>
+              {ep}
+            </option>
+          {/if}
         {/each}
       </select>
       <button
@@ -96,15 +102,22 @@
   </header>
 
   <main class="flex flex-grow flex-col items-center justify-center">
-
-    <div class="my-24 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
-      {#each feesToRender as { type, value }}
-        <Fee
-          {type}
-          {value}
-          loading={AS.isLoading($fees) || AS.isInitial($fees)}
-        />
-      {/each}
+    <div class="my-24">
+      <div class="grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
+        {#each feesToRender as { type, value }}
+          <Fee
+            {type}
+            {value}
+            loading={AS.isLoading($fees) || AS.isInitial($fees)}
+            error={AS.isFailure($fees)}
+          />
+        {/each}
+      </div>
+      {#if AS.isFailure($fees)}
+        <p class="mt-10 w-full p-4 text-center text-sm text-error">
+          Error while loading fees from {$endpoint}.
+        </p>
+      {/if}
     </div>
 
     <button
@@ -161,20 +174,20 @@
     </aside>
   </footer>
 
-  
   {#if openSettings}
-  <!-- cover -->
-  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
-  <div
-    transition:fade={{ duration: 100 }}
-    class="absolute inset-x-0 inset-y-0 bg-white bg-opacity-80"
-    on:click={() => (openSettings = false)}
+    <!-- cover -->
+    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+    <div
+      transition:fade={{ duration: 100 }}
+      class="absolute inset-x-0 inset-y-0 bg-white bg-opacity-80"
+      on:click={() => (openSettings = false)}
     ></div>
-  <Settings 
-    endpoints={$endpoints}
-    open={openSettings} 
-    onClose={() => openSettings = false}
-    onUpdateEndpoint={({url, endpoint}) => send({ type: 'endpoint.update', data: {endpoint, url} })}
+    <Settings
+      endpoints={$endpoints}
+      open={openSettings}
+      onClose={() => (openSettings = false)}
+      onUpdateEndpoint={({ url, endpoint }) =>
+        send({ type: 'endpoint.update', data: { endpoint, url } })}
     />
   {/if}
 </div>
