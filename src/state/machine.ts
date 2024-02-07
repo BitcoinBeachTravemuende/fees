@@ -14,6 +14,8 @@ import {
 import { getFees as getMempoolFees } from '../api/mempool'
 import { getFees as getEsploraFees } from '../api/esplora'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
+import { setEndpoints } from '../util/storage'
+import { KeyValueStore } from '@effect/platform-browser'
 
 const MAX_RETRIES = 2
 
@@ -34,6 +36,12 @@ export const machine = setup({
     input: {
       endpoints: EndpointMap
       selectedEndpoint: Endpoint
+    }
+    actions: {
+      type: 'storeEndpoints'
+      params: {
+        endpoints: EndpointMap
+      }
     }
   },
   actors: {
@@ -70,7 +78,21 @@ export const machine = setup({
     checkTick: ({ context }) => context.ticks * INTERVAL_MS < MAX_TICK_MS,
     checkMaxTick: ({ context }) => context.ticks * INTERVAL_MS >= MAX_TICK_MS,
   },
-  actions: {},
+  actions: {
+    storeEndpoints: async (
+      _,
+      params: {
+        endpoints: EndpointMap
+      }
+    ) => {
+      await Effect.runPromise(
+        Effect.provide(
+          setEndpoints(params.endpoints),
+          KeyValueStore.layerLocalStorage
+        )
+      )
+    },
+  },
 }).createMachine({
   id: 'app',
   context: ({ input }) => ({
@@ -145,17 +167,28 @@ export const machine = setup({
     },
     'endpoint.update': {
       target: '.loading',
-      actions: assign(({ context, event }) => ({
-        fees: pipe(context.fees, value, loading),
-        url: event.data.url,
-        selectedEndpoint: event.data.endpoint,
-        endpoints: {
-          ...context.endpoints,
-          [event.data.endpoint]: event.data.url,
+      actions: [
+        assign(({ context, event }) => ({
+          fees: pipe(context.fees, value, loading),
+          url: event.data.url,
+          selectedEndpoint: event.data.endpoint,
+          endpoints: {
+            ...context.endpoints,
+            [event.data.endpoint]: event.data.url,
+          },
+          retries: 0,
+          ticks: 0,
+        })),
+        {
+          type: 'storeEndpoints',
+          params: ({ context, event }) => ({
+            endpoints: {
+              ...context.endpoints,
+              [event.data.endpoint]: event.data.url,
+            },
+          }),
         },
-        retries: 0,
-        ticks: 0,
-      })),
+      ],
     },
     'fees.load': {
       target: '.loading',
