@@ -2,7 +2,6 @@ name: Run tests
 
 on:
   push:
-    branches: [main, feat/cli]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
