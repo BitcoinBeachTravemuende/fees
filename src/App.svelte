@@ -1,16 +1,22 @@
 <script lang="ts">
   import btcLogo from './assets/btc.svg'
   import './app.css'
-  import { actorRef, MAX_TICK_MS, INTERVAL_MS } from './state/store'
+  import {
+    actorRef,
+    MAX_TICK_MS,
+    INTERVAL_MS,
+    themeActorRef,
+  } from './state/store'
   import * as AS from './util/async'
   import { pipe, Option as O } from 'effect'
   import { useSelector } from '@xstate/svelte'
-  import { Fees, entries, isEndpoint } from './types'
+  import { Fees, entries, isEndpoint, type Theme } from './types'
   import Fee from './component/Fee.svelte'
   import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
   import Settings from './component/Settings.svelte'
   import { fade } from 'svelte/transition'
+  import type { Readable } from 'svelte/store'
 
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
@@ -18,7 +24,12 @@
   const endpoints = useSelector(actorRef, (s) => s.context.endpoints)
   const ticks = useSelector(actorRef, (s) => s.context.ticks)
 
-  let openSettings = false
+  const sendTheme = themeActorRef.send
+  const theme: Readable<Theme> = useSelector(themeActorRef, (s) =>
+    s.value === 'idle' ? 'light' : s.value
+  )
+
+  let openSettings = true
 
   $: percent = Math.round(($ticks * INTERVAL_MS * 100) / MAX_TICK_MS)
 
@@ -188,6 +199,13 @@
       onClose={() => (openSettings = false)}
       onUpdateEndpoint={({ url, endpoint }) =>
         send({ type: 'endpoint.update', data: { endpoint, url } })}
+      theme={$theme}
+      onChangeTheme={(theme) => {
+        sendTheme({ type: theme })
+      }}
+      onToggleTheme={() => {
+        sendTheme({ type: 'toggle' })
+      }}
     />
   {/if}
 </div>

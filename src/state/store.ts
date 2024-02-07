@@ -2,6 +2,7 @@ import { createActor } from 'xstate'
 import * as KeyValueStore from '@effect/platform-browser/KeyValueStore'
 
 import { machine } from './machine'
+import { machine as themeMachine } from './themeMachine'
 import * as Effect from 'effect/Effect'
 import { pipe } from 'effect'
 import { type EndpointMap } from '../types'
@@ -36,3 +37,5 @@ export const actorRef = createActor(machine, {
     selectedEndpoint: 'mempool',
   },
 }).start()
+
+export const themeActorRef = createActor(themeMachine).start()

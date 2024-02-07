@@ -2,11 +2,20 @@
   import { twMerge } from 'tailwind-merge'
   import EditableUrlInput from './EditableUrlInput.svelte'
   import { fly } from 'svelte/transition'
-  import { entries, type Endpoint, type EndpointMap } from '../types'
+  import {
+    entries,
+    type Endpoint,
+    type EndpointMap,
+    type Theme,
+  } from '../types'
 
   export let endpoints: EndpointMap
   export let onClose = () => {}
   export let onUpdateEndpoint = (_: { url: URL; endpoint: Endpoint }) => {}
+
+  export let theme: Theme = 'light'
+  export let onToggleTheme = () => {}
+  export let onChangeTheme = (_: Theme) => {}
 </script>
 
 <div
@@ -36,6 +45,26 @@
     </button>
   </div>
 
+  <h3>Theme</h3>
+  <div class="flex items-center gap-x-2">
+    <button
+      class="text-sm text-gray-700 hover:text-gray-900"
+      disabled={theme === 'light'}
+      on:click={(_) => onChangeTheme('light')}>light</button
+    >
+    <input
+      type="checkbox"
+      class="toggle"
+      checked={theme === 'dark'}
+      on:change={onToggleTheme}
+    />
+    <button
+      class="text-sm text-gray-700 hover:text-gray-900"
+      disabled={theme === 'dark'}
+      on:click={(_) => onChangeTheme('dark')}>dark</button
+    >
+  </div>
+  <h3>Endpoints</h3>
   <div class="">
     {#each entries(endpoints) as [ep, url]}
       <h3 class="text-gray-600">{ep}</h3>

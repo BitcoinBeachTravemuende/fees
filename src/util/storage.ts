@@ -3,7 +3,15 @@ import * as KeyValueStore from '@effect/platform-browser/KeyValueStore'
 import * as Effect from 'effect/Effect'
 import { Schema as S } from '@effect/schema'
 import { pipe, Option as O } from 'effect'
-import { EndpointMapSchema, type EndpointMap } from '../types'
+import {
+  EndpointMapSchema,
+  type EndpointMap,
+  ThemeSchema,
+  type Theme,
+} from '../types'
+
+const KEY_ENDPOITNS = 'endpoints'
+const KEY_THEME = 'theme'
 
 const getLocalStorage = <R, I, A>(key: string, schema: S.Schema<R, I, A>) =>
   pipe(
@@ -15,7 +23,9 @@ const getLocalStorage = <R, I, A>(key: string, schema: S.Schema<R, I, A>) =>
   )
 
 export const getEndpoints = () =>
-  getLocalStorage('endpoints', EndpointMapSchema)
+  getLocalStorage(KEY_ENDPOITNS, EndpointMapSchema)
+
+export const getTheme = () => getLocalStorage(KEY_THEME, ThemeSchema)
 
 const setLocalStorage = <R, I, A>(
   value: A,
@@ -34,4 +44,7 @@ const setLocalStorage = <R, I, A>(
   )
 
 export const setEndpoints = (endpoints: EndpointMap) =>
-  setLocalStorage(endpoints, 'endpoints', EndpointMapSchema)
+  setLocalStorage(endpoints, KEY_ENDPOITNS, EndpointMapSchema)
+
+export const setTheme = (theme: Theme) =>
+  setLocalStorage(theme, KEY_THEME, ThemeSchema)

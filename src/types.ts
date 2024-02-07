@@ -4,6 +4,10 @@ import type { ConfigError } from 'effect/ConfigError'
 import type { AsyncData } from './util/async'
 import { UrlSchema } from './util/url'
 
+export const ThemeSchema = S.literal('dark', 'light')
+
+export type Theme = S.Schema.To<typeof ThemeSchema>
+
 export const ENDPOINTS = ['mempool', 'esplora', 'rpc-explorer'] as const
 
 export const EndpointSchema = S.literal(...ENDPOINTS)
