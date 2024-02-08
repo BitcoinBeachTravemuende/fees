@@ -32,7 +32,7 @@
     s.value === 'light' ? 'light' : 'dark'
   )
 
-  let openSettings = true
+  let openSettings = false
 
   $: percent = Math.round(($ticks * INTERVAL_MS * 100) / MAX_TICK_MS)
 
