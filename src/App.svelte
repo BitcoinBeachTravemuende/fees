@@ -21,12 +21,15 @@
   const send = actorRef.send
   const fees = useSelector(actorRef, (s) => s.context.fees)
   const endpoint = useSelector(actorRef, (s) => s.context.selectedEndpoint)
-  const endpoints = useSelector(actorRef, (s) => s.context.endpoints)
+  const _endpoints = useSelector(actorRef, (s) => s.context.endpoints)
+  // TODO: Enable 'rpc-explorer'
+  // It can't be accessed due CORS errors "cors missing allow origin"
+  $: ({ 'rpc-explorer': _, ...endpoints } = $_endpoints)
   const ticks = useSelector(actorRef, (s) => s.context.ticks)
 
   const sendTheme = themeActorRef.send
   const theme: Readable<Theme> = useSelector(themeActorRef, (s) =>
-    s.value === 'idle' ? 'light' : s.value
+    s.value === 'light' ? 'light' : 'dark'
   )
 
   let openSettings = true
@@ -65,38 +68,41 @@
   })
 </script>
 
-<div class="container relative mx-auto flex h-screen flex-col">
+<div
+  class="container relative mx-auto flex h-screen flex-col bg-white dark:bg-gray-900"
+>
   <header
     class="flex w-full place-content-between items-center px-4 py-2 md:py-4"
   >
     <h1 class="flex items-center">
-      <img src={btcLogo} class="mr-1 h-6 w-6 md:h-6 md:w-8" alt="BTC Logo" />
-      <div class="text-nowrap text-2xl font-bold md:text-3xl">
-        fees <span class="text-sm font-normal text-gray-500 md:text-sm"
+      <img
+        src={btcLogo}
+        class="mr-1 h-6 w-6 rounded-full text-white md:h-6 md:w-8"
+        alt="BTC Logo"
+      />
+      <div
+        class="text-nowrap text-2xl font-bold text-gray-800 dark:text-gray-300 md:text-3xl"
+      >
+        fees <span
+          class="text-sm font-normal text-gray-500 dark:text-gray-300 md:text-sm"
           >sat/vB</span
         >
       </div>
     </h1>
     <div class="flex items-center">
       <select
-        class="select select-ghost select-md text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none"
+        class="select select-ghost select-md text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-200"
         on:change={onChangeEndpoint}
       >
-        {#each entries($endpoints) as [ep]}
-          <!-- 
-            FIXME: Remove rpc explorer from endpoints? 
-            It can't be accessed due CORS errors "cors missing allow origin"  
-          -->
-          {#if ep !== 'rpc-explorer'}
-            <option value={ep} selected={ep === $endpoint}>
-              {ep}
-            </option>
-          {/if}
+        {#each entries(endpoints) as [ep]}
+          <option class="text-gray-500" value={ep} selected={ep === $endpoint}>
+            {ep}
+          </option>
         {/each}
       </select>
       <button
         on:click={() => (openSettings = !openSettings)}
-        class="group text-gray-400 hover:text-gray-600"
+        class="group text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-200"
         title="settings"
       >
         <svg
@@ -138,24 +144,27 @@
       disabled={AS.isLoading($fees)}
     >
       <div
-        class="h-full w-full rounded-full border-[2px] border-gray-200"
+        class="h-full w-full rounded-full border-[2px] border-gray-200 dark:border-gray-600"
       ></div>
 
+      <!-- Note: radial-progress -> ::after is overridden to avoid rotating a strange point outside  -->
       <div
-        class="radial-progress absolute inset-x-0 inset-y-0 h-12 w-12 text-xs text-transparent md:h-14 md:w-14"
+        class="radial-progress absolute inset-x-0 inset-y-0 h-12 w-12 text-xs text-transparent after:bg-transparent md:h-14 md:w-14"
         class:progressColor={percent > 0}
         style="--value:{percent}; --thickness: 2px;"
         role="progressbar"
       >
         {#if percent > 0}
-          <span class="text-xs text-gray-400">{percent}%</span>
+          <span class="text-xs text-gray-400 dark:text-gray-400"
+            >{percent}%</span
+          >
         {/if}
       </div>
       <div
         class={twMerge(
           'absolute inset-x-[4px] inset-y-[4px]',
           'flex items-center justify-center',
-          'rounded-full border-2 border-transparent bg-gray-300 group-hover:bg-orange-400 group-hover:opacity-100',
+          'hover:bg-orange rounded-full border-2 border-transparent bg-gray-300 group-hover:opacity-100 group-active:bg-orange-400 group-active:opacity-100 dark:bg-gray-700',
           'ease',
           percent > 0 && 'opacity-0'
         )}
@@ -173,7 +182,9 @@
     </button>
   </main>
 
-  <footer class="mt-20 flex flex-col items-center p-4 text-gray-400">
+  <footer
+    class="mt-20 flex flex-col items-center p-4 text-gray-400 dark:text-gray-400"
+  >
     <aside class="flex items-center text-xs md:text-sm">
       <a
         href="https://github.com/BitcoinBeachTravemuende/fees/"
@@ -186,15 +197,8 @@
   </footer>
 
   {#if openSettings}
-    <!-- cover -->
-    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
-    <div
-      transition:fade={{ duration: 100 }}
-      class="absolute inset-x-0 inset-y-0 bg-white bg-opacity-80"
-      on:click={() => (openSettings = false)}
-    ></div>
     <Settings
-      endpoints={$endpoints}
+      {endpoints}
       open={openSettings}
       onClose={() => (openSettings = false)}
       onUpdateEndpoint={({ url, endpoint }) =>
@@ -206,9 +210,20 @@
       onToggleTheme={() => {
         sendTheme({ type: 'toggle' })
       }}
+      class="z-50"
     />
   {/if}
 </div>
+
+{#if openSettings}
+  <!-- cover -->
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+  <div
+    transition:fade={{ duration: 100 }}
+    class="absolute inset-x-0 inset-y-0 z-10 bg-white bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-20"
+    on:click={() => (openSettings = false)}
+  ></div>
+{/if}
 
 <!-- 
   Note: postcss is needed for Tailwind's `@apply`

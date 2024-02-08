@@ -10,9 +10,16 @@ export const machine = setup({
     events: { type: 'toggle' } | { type: 'light' } | { type: 'dark' }
     actions: {
       type: 'storeTheme'
-      params: {
-        theme: Theme
-      }
+      params:
+        | {
+            theme: Theme
+          }
+        | {
+            type: 'updateDom'
+            params: {
+              theme: Theme
+            }
+          }
     }
   },
   actors: {
@@ -44,6 +51,15 @@ export const machine = setup({
         Effect.runPromise
       )
     },
+    updateDom: (
+      _,
+      params: {
+        theme: Theme
+      }
+    ) => {
+      const htmlClass = document.querySelector('html')!.classList
+      params.theme === 'dark' ? htmlClass.add('dark') : htmlClass.remove('dark')
+    },
   },
 }).createMachine({
   id: 'editableUrlM',
@@ -73,10 +89,16 @@ export const machine = setup({
       },
     },
     light: {
-      entry: {
-        type: 'storeTheme',
-        params: { theme: 'light' },
-      },
+      entry: [
+        {
+          type: 'storeTheme',
+          params: { theme: 'light' },
+        },
+        {
+          type: 'updateDom',
+          params: { theme: 'light' },
+        },
+      ],
       on: {
         toggle: {
           target: 'dark',
@@ -87,10 +109,16 @@ export const machine = setup({
       },
     },
     dark: {
-      entry: {
-        type: 'storeTheme',
-        params: { theme: 'dark' },
-      },
+      entry: [
+        {
+          type: 'storeTheme',
+          params: { theme: 'dark' },
+        },
+        {
+          type: 'updateDom',
+          params: { theme: 'dark' },
+        },
+      ],
       on: {
         toggle: {
           target: 'light',
