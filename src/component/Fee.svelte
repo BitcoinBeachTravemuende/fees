@@ -16,7 +16,7 @@
 
   const tvValue = tv({
     // elements need to be rendered in reverse order (see comment at `valueStrings` above)
-    base: 'countdown flex flex-row-reverse single justify-self-end text-gray-900 ease col-span-2 opacity-0 ease',
+    base: 'countdown flex flex-row-reverse single justify-self-end text-gray-800 dark:text-gray-300 ease col-span-2 opacity-0 ease',
     variants: {
       size: {
         fast: 'text-8xl md:text-9xl opacity-100',
@@ -24,13 +24,13 @@
         slow: 'text-6xl md:text-7xl opacity-100',
       },
       inactive: {
-        true: 'text-gray-300 opacity-100',
+        true: 'text-gray-300 dark:text-gray-600 opacity-100',
       },
     },
   })
 
   const tvLabel = tv({
-    base: 'font-semi-bold text-gray-900 ease',
+    base: 'font-semi-bold text-gray-800 dark:text-gray-300 ease',
     variants: {
       size: {
         fast: 'text-2xl md:text-4xl',
@@ -38,13 +38,13 @@
         slow: 'text-lg md:text-2xl',
       },
       inactive: {
-        true: 'text-gray-300',
+        true: 'text-gray-300 dark:text-gray-600',
       },
     },
   })
 
   const tvTimeLabel = tv({
-    base: 'text-gray-400 ease',
+    base: 'text-gray-400 dark:text-gray-400 ease',
     variants: {
       size: {
         fast: 'text-lg md:text-xl',
@@ -52,7 +52,7 @@
         slow: 'text-sm md:text-base',
       },
       inactive: {
-        true: 'text-gray-200',
+        true: 'text-gray-200 dark:text-gray-700',
       },
     },
   })

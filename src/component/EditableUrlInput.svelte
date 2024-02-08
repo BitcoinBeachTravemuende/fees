@@ -72,14 +72,14 @@
       class={twMerge([
         'group',
         'flex w-full items-center',
-        ' gap-x-2 p-2',
-        'border border-gray-300',
+        'gap-x-2 p-2',
+        'border border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-400',
         'text-base lg:text-lg',
       ])}
     >
       <button
         class={twMerge([
-          'w-full text-left text-gray-600',
+          'w-full p-1 text-left text-gray-600 dark:text-gray-300',
           'whitespace-nowrap',
           'overflow-hidden text-ellipsis',
         ])}
@@ -89,11 +89,11 @@
       </button>
       <!-- EDIT -->
       <button
-        class="text-gray-400 group-hover:text-gray-500"
+        class="text-gray-400 group-hover:text-gray-500 dark:text-gray-400 group-hover:dark:text-gray-300"
         on:click={onEditHandler}
         ><svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-inherit"
+          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-inherit dark:bg-gray-700"
           viewBox="0 0 24 24"
           ><path
             fill="currentColor"
@@ -106,17 +106,22 @@
     <div
       class={twMerge([
         'flex w-full items-center',
-        ' gap-x-2 p-2',
+        'gap-x-2 p-2',
         'text-base lg:text-lg',
-        'border hover:border-gray-300 has-[:focus]:border-gray-400',
-        'text-gray-600',
+        'border hover:border-gray-300 has-[:focus]:border-gray-400 has-[:focus]:dark:border-gray-300',
+        'text-gray-600 dark:text-gray-300',
         isError ? '!border-error' : '',
         isSaved ? '!border-success' : '',
       ])}
     >
       <input
         bind:this={inputRef}
-        class={twMerge(['w-full', 'focus:outline-none', 'text-inherit'])}
+        class={twMerge([
+          'w-full p-1',
+          'focus:outline-none',
+          'text-inherit',
+          'bg-transparent',
+        ])}
         type="text"
         value={$snapshot.context.enteredValue}
         on:input={onChangeHandler}
@@ -133,7 +138,7 @@
       <button on:click={onCancelHandler}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-gray-400 hover:text-gray-600"
+          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-gray-400 hover:text-gray-600 dark:bg-gray-700 dark:hover:text-gray-200"
           viewBox="0 0 24 24"
           ><path
             fill="currentColor"
@@ -145,10 +150,10 @@
       <button
         on:click={onSaveHandler}
         disabled={isError}
-        class="text-gray-400 enabled:hover:text-success"
+        class="text-gray-400 enabled:hover:text-success dark:text-gray-300"
         ><svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-inherit"
+          class="h-8 w-8 rounded-lg bg-gray-100 p-1 text-inherit dark:bg-gray-700"
           viewBox="0 0 24 24"
           ><path
             fill="currentColor"

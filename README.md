@@ -1,6 +1,6 @@
 # Fees
 
-Estimated fees for Bitcoin transactions using configurable endpoints. Point endpoints to your (private) node as you like.
+[Estimated fees for Bitcoin transactions](https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09_fees.adoc#estimating-appropriate-fee-rates) using configurable endpoints. Point endpoints to your (private) node as you like.
 
 Currently [Mempool](https://mempool.space/) and [Esplora](https://github.com/Blockstream/esplora/) are supported only.
 
