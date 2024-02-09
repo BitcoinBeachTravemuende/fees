@@ -8,9 +8,9 @@ export const ThemeSchema = S.literal('dark', 'light')
 
 export type Theme = S.Schema.To<typeof ThemeSchema>
 
-export const ENDPOINTS = ['mempool', 'esplora', 'rpc-explorer'] as const
+const ENDPOINTS = ['mempool', 'esplora', 'rpc-explorer'] as const
 
-export const EndpointSchema = S.literal(...ENDPOINTS)
+export const EndpointSchema = S.literal('mempool', 'esplora', 'rpc-explorer')
 
 export type Endpoint = S.Schema.To<typeof EndpointSchema>
 

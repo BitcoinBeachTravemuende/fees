@@ -1,4 +1,4 @@
-import * as KeyValueStore from '@effect/platform-browser/KeyValueStore'
+import * as KeyValueStore from '@effect/platform/KeyValueStore'
 
 import * as Effect from 'effect/Effect'
 import { Schema as S } from '@effect/schema'
@@ -13,7 +13,7 @@ import {
 const KEY_ENDPOITNS = 'endpoints'
 const KEY_THEME = 'theme'
 
-const getLocalStorage = <R, I, A>(key: string, schema: S.Schema<R, I, A>) =>
+const getLocalStorage = <A, E, R>(key: string, schema: S.Schema<A, E, R>) =>
   pipe(
     KeyValueStore.KeyValueStore,
     Effect.flatMap((kv) => kv.get(key)),
@@ -27,10 +27,10 @@ export const getEndpoints = () =>
 
 export const getTheme = () => getLocalStorage(KEY_THEME, ThemeSchema)
 
-const setLocalStorage = <R, I, A>(
+const setLocalStorage = <A, E, R>(
   value: A,
   key: string,
-  schema: S.Schema<R, I, A>
+  schema: S.Schema<A, E, R>
 ) =>
   pipe(
     value,

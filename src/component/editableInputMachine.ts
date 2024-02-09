@@ -2,7 +2,7 @@ import { assign, fromPromise, setup } from 'xstate'
 
 import { Effect, pipe } from 'effect'
 
-type ValidateValue<T> = (_: string) => Effect.Effect<never, Error, T>
+type ValidateValue<T> = (_: string) => Effect.Effect<T, Error, never>
 
 export const mkMachine = <T extends { toString: () => string }>() =>
   setup({

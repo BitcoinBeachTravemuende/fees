@@ -39,8 +39,9 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@effect/platform-browser": "^0.28.11",
-    "@effect/schema": "^0.61.7",
+    "@effect/platform-browser": "^0.29.1",
+    "@effect/platform": "^0.44.1",
+    "@effect/schema": "^0.62.1",
     "@xstate/svelte": "^3.0.2",
     "effect": "^2.3.1",
     "svelte": "^4.2.10",

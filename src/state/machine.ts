@@ -16,7 +16,7 @@ import { getFees as getEsploraFees } from '../api/esplora'
 import { getFees as getRpcExplorerFees } from '../api/rpc-explorer'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { setEndpoints } from '../util/storage'
-import { KeyValueStore } from '@effect/platform-browser'
+import { BrowserKeyValueStore } from '@effect/platform-browser'
 
 const MAX_RETRIES = 2
 
@@ -88,7 +88,7 @@ export const machine = setup({
       await Effect.runPromise(
         Effect.provide(
           setEndpoints(params.endpoints),
-          KeyValueStore.layerLocalStorage
+          BrowserKeyValueStore.layerLocalStorage
         )
       )
     },

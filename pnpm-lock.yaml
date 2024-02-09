@@ -5,12 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@effect/platform':
+    specifier: ^0.44.1
+    version: 0.44.1(@effect/schema@0.62.1)(effect@2.3.1)
   '@effect/platform-browser':
-    specifier: ^0.28.11
-    version: 0.28.11(@effect/platform@0.43.11)(effect@2.3.1)
+    specifier: ^0.29.1
+    version: 0.29.1(@effect/platform@0.44.1)(effect@2.3.1)
   '@effect/schema':
-    specifier: ^0.61.7
-    version: 0.61.7(effect@2.3.1)(fast-check@3.15.1)
+    specifier: ^0.62.1
+    version: 0.62.1(effect@2.3.1)(fast-check@3.15.1)
   '@xstate/svelte':
     specifier: ^3.0.2
     version: 3.0.2(svelte@4.2.10)(xstate@5.6.2)
@@ -128,33 +131,33 @@ packages:
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
     dev: true
 
-  /@effect/platform-browser@0.28.11(@effect/platform@0.43.11)(effect@2.3.1):
-    resolution: {integrity: sha512-WFBX1O5DrKcss3kYLcqPbuoIUVNzXmHv9GrLUJ8G27Mm6q1qzu+Eg/uwDRkDlZY6dRyGaAa6fVdjpu9+Sg1eIw==}
+  /@effect/platform-browser@0.29.1(@effect/platform@0.44.1)(effect@2.3.1):
+    resolution: {integrity: sha512-CZZlthzjmJhTI+rWzp1DdoFSlFQI4WIInEMdLE/zCfw8+kTdT3O58eQqw/X+68q1v/Xo19f63chTF/l1TB7gqg==}
     peerDependencies:
-      '@effect/platform': ^0.43.11
-      effect: ^2.2.5
+      '@effect/platform': ^0.44.1
+      effect: ^2.3.1
     dependencies:
-      '@effect/platform': 0.43.11(@effect/schema@0.61.7)(effect@2.3.1)
+      '@effect/platform': 0.44.1(@effect/schema@0.62.1)(effect@2.3.1)
       effect: 2.3.1
     dev: false
 
-  /@effect/platform@0.43.11(@effect/schema@0.61.7)(effect@2.3.1):
-    resolution: {integrity: sha512-mjFfWMXY6AVsql2F3j3uATymzMNBN06K0nOYJn52TDefWWlaaruFusbpWrfAVXYO0IjFZL2r9A87aQprlrXHlw==}
+  /@effect/platform@0.44.1(@effect/schema@0.62.1)(effect@2.3.1):
+    resolution: {integrity: sha512-j22/P4dYkyoMcTgR341w0hXX/4Xr9STIxXrHOgcw4CRKLz8U8dZjoB+zOZ8JVdrQQ64IRmdLqMiyabXiGfzufA==}
     peerDependencies:
-      '@effect/schema': ^0.61.7
-      effect: ^2.2.5
+      '@effect/schema': ^0.62.1
+      effect: ^2.3.1
     dependencies:
-      '@effect/schema': 0.61.7(effect@2.3.1)(fast-check@3.15.1)
+      '@effect/schema': 0.62.1(effect@2.3.1)(fast-check@3.15.1)
       effect: 2.3.1
       find-my-way-ts: 0.1.1
       multipasta: 0.1.21
       path-browserify: 1.0.1
     dev: false
 
-  /@effect/schema@0.61.7(effect@2.3.1)(fast-check@3.15.1):
-    resolution: {integrity: sha512-ARbJSIfflJNQe1EPlZc03BxrsdfGyTJOWNWbyN3DrbPDIWcaxBmwxlIaPfJ6GkzxkazQ55t57YLuO9O9wH4rQA==}
+  /@effect/schema@0.62.1(effect@2.3.1)(fast-check@3.15.1):
+    resolution: {integrity: sha512-Zi8PtOElNyq0INLqGlDrMqB/uzs/TACP2ZhcLABm/QjFVvRTO996UaVdsOyA+OTqroQkoYEe+q/cnXxlMAGLBw==}
     peerDependencies:
-      effect: ^2.2.5
+      effect: ^2.3.1
       fast-check: ^3.13.2
     dependencies:
       effect: 2.3.1

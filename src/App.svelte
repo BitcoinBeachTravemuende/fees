@@ -102,7 +102,7 @@
       </select>
       <button
         on:click={() => (openSettings = !openSettings)}
-        class="group text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-200"
+        class="group text-gray-500 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-200"
         title="settings"
       >
         <svg

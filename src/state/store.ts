@@ -1,5 +1,6 @@
 import { createActor } from 'xstate'
-import * as KeyValueStore from '@effect/platform-browser/KeyValueStore'
+import { BrowserKeyValueStore } from '@effect/platform-browser'
+import { KeyValueStore } from '@effect/platform'
 
 import { machine } from './machine'
 import { machine as themeMachine } from './themeMachine'
@@ -15,9 +16,9 @@ export const INTERVAL_MS = 100
 export const MAX_TICK_MS = 30000
 
 export const defaultEndpoints: Effect.Effect<
-  KeyValueStore.KeyValueStore,
+  EndpointMap,
   Error,
-  EndpointMap
+  KeyValueStore.KeyValueStore
 > = pipe(
   Storage.getEndpoints(),
   Effect.orElse(() =>
@@ -32,7 +33,7 @@ export const defaultEndpoints: Effect.Effect<
 export const actorRef = createActor(machine, {
   input: {
     endpoints: Effect.runSync(
-      Effect.provide(defaultEndpoints, KeyValueStore.layerLocalStorage)
+      Effect.provide(defaultEndpoints, BrowserKeyValueStore.layerLocalStorage)
     ),
     selectedEndpoint: 'mempool',
   },
