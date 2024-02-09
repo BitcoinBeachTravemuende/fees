@@ -18,7 +18,7 @@ const Fees = S.struct({
 
 type Fees = S.Schema.To<typeof Fees>
 
-const toFees = (fees: Fees): E.Effect<never, never, App.Fees> =>
+const toFees = (fees: Fees): E.Effect<App.Fees, never> =>
   E.succeed({
     fast: fees['1'],
     medium: fees['3'],

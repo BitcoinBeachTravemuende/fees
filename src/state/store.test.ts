@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { Effect } from 'effect'
 import { defaultEndpoints } from './store'
-import { KeyValueStore } from '@effect/platform-browser'
+import { BrowserKeyValueStore } from '@effect/platform-browser'
 import type { EndpointMap } from '../types'
 import { mockEndpointMap } from '../test/mocks'
 
@@ -10,7 +10,7 @@ describe('Store', () => {
     const endpointMap: EndpointMap = mockEndpointMap()
 
     const result = Effect.runSync(
-      Effect.provide(defaultEndpoints, KeyValueStore.layerLocalStorage)
+      Effect.provide(defaultEndpoints, BrowserKeyValueStore.layerLocalStorage)
     )
     expect(result).toStrictEqual(endpointMap)
   })

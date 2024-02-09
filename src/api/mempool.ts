@@ -8,7 +8,7 @@ import * as C from './common'
 export const DEFAULT_ENDPOINT_URL =
   'https://mempool.space/api/v1/fees/recommended'
 
-export const defaultUrl = () =>
+export const defaultUrl = (): E.Effect<URL, Error, never> =>
   urlWithDefault(import.meta.env.VITE_URL_MEMPOOL, DEFAULT_ENDPOINT_URL)
 
 const Fees = S.struct({
@@ -19,7 +19,7 @@ const Fees = S.struct({
 
 type Fees = S.Schema.To<typeof Fees>
 
-const toFees = (fees: Fees): E.Effect<never, never, App.Fees> =>
+const toFees = (fees: Fees): E.Effect<App.Fees, never, never> =>
   E.succeed({
     fast: fees.fastestFee,
     medium: fees.halfHourFee,

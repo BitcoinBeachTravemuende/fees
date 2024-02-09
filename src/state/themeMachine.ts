@@ -3,7 +3,7 @@ import { assign, fromPromise, setup } from 'xstate'
 import { Effect, pipe } from 'effect'
 import type { Theme } from '../types'
 import * as Storage from '../util/storage'
-import { KeyValueStore } from '@effect/platform-browser'
+import { BrowserKeyValueStore } from '@effect/platform-browser'
 
 export const machine = setup({
   types: {} as {
@@ -33,7 +33,8 @@ export const machine = setup({
               : 'light'
           )
         ),
-        (effect) => Effect.provide(effect, KeyValueStore.layerLocalStorage),
+        (effect) =>
+          Effect.provide(effect, BrowserKeyValueStore.layerLocalStorage),
         Effect.runPromise
       )
     ),
@@ -47,7 +48,8 @@ export const machine = setup({
     ) => {
       await pipe(
         Storage.setTheme(params.theme),
-        (effect) => Effect.provide(effect, KeyValueStore.layerLocalStorage),
+        (effect) =>
+          Effect.provide(effect, BrowserKeyValueStore.layerLocalStorage),
         Effect.runPromise
       )
     },

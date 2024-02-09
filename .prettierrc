@@ -11,6 +11,7 @@
       "options": {
         "trailingComma": "none"
       }
-    }
+    },
+    { "files": "*.svelte", "options": { "parser": "svelte" } }
   ]
 }
