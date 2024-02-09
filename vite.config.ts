@@ -8,5 +8,7 @@ export default defineConfig({
   test: {
     // https://vitest.dev/config/#environment
     environment: 'jsdom',
+    // https://vitest.dev/config/#include
+    include: ['src/**/*.{test,spec}.ts'],
   },
 })
