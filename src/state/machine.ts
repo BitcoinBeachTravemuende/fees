@@ -2,7 +2,13 @@ import { assign, fromCallback, fromPromise, setup } from 'xstate'
 
 import { Effect, Option as O, pipe } from 'effect'
 
-import type { Endpoint, EndpointMap, FeesAsync, GetFeeError } from '../types'
+import type {
+  Endpoint,
+  EndpointMap,
+  Fees,
+  FeesAsync,
+  GetFeeError,
+} from '../types'
 import {
   fail,
   initial,
@@ -11,12 +17,13 @@ import {
   success,
   value,
 } from '../util/async'
-import { getFees as getMempoolFees } from '../api/mempool'
-import { getFees as getEsploraFees } from '../api/esplora'
-import { getFees as getRpcExplorerFees } from '../api/rpc-explorer'
+import * as Mempool from '../api/mempool'
+import * as Esplora from '../api/esplora'
+import * as RpcExplorer from '../api/rpc-explorer'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { setEndpoints } from '../util/storage'
 import { BrowserKeyValueStore } from '@effect/platform-browser'
+import { FeesService } from '../api/common'
 
 const MAX_RETRIES = 2
 
@@ -48,13 +55,23 @@ export const machine = setup({
   actors: {
     fetchFeesActor: fromPromise(
       async ({ input }: { input: { endpoint: Endpoint; url: URL } }) => {
+        const effect: Effect.Effect<Fees, GetFeeError, 'FeesService'> = pipe(
+          FeesService,
+          Effect.flatMap((service) => service.getFees(input.url))
+        )
         switch (input.endpoint) {
           case 'mempool':
-            return Effect.runPromise(getMempoolFees(input.url))
+            return Effect.runPromise(
+              Effect.provide(effect, Mempool.FeesServiceLayer)
+            )
           case 'rpc-explorer':
-            return Effect.runPromise(getRpcExplorerFees(input.url))
+            return Effect.runPromise(
+              Effect.provide(effect, RpcExplorer.FeesServiceLayer)
+            )
           case 'esplora':
-            return Effect.runPromise(getEsploraFees(input.url))
+            return Effect.runPromise(
+              Effect.provide(effect, Esplora.FeesServiceLayer)
+            )
         }
       }
     ),
