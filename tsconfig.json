@@ -26,7 +26,8 @@
       {
         "name": "@effect/language-service"
       }
-    ]
+    ],
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]
