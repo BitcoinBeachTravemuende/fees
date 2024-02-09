@@ -1,7 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2020",
     // https://www.npmjs.com/package/@effect/schema#requirements
     "strict": true,
     "exactOptionalPropertyTypes": false, // true is not supported by xstate
@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
-    "module": "ESNext",
+    "module": "ES2020",
     "resolveJsonModule": true,
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.
@@ -24,10 +24,10 @@
     "jsx": "react",
     "plugins": [
       {
-        "name": "@effect/language-service",
-      },
-    ],
+        "name": "@effect/language-service"
+      }
+    ]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
