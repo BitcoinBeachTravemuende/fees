@@ -1,4 +1,4 @@
 {
-  "pre-commit": "pnpm format",
-  "pre-push": "pnpm check && pnpm lint && pnpm test"
+  "pre-commit": "npx nano-staged",
+  "pre-push": "pnpm check && pnpm test"
 }
