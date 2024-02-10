@@ -1,5 +1,6 @@
 <script lang="ts">
   import btcLogo from './assets/btc.svg'
+  import { tv } from 'tailwind-variants'
   import './app.css'
   import {
     actorRef,
@@ -66,6 +67,18 @@
     // load fees at start
     send({ type: 'fees.load' })
   })
+
+  const feesStatus = tv({
+    base: 'rounded-full w-2 h-2 ease mt-1',
+    variants: {
+      status: {
+        initial: 'bg-gray-300',
+        loading: 'bg-green-200',
+        error: 'bg-error',
+        success: 'bg-success',
+      },
+    },
+  })
 </script>
 
 <div
@@ -90,8 +103,21 @@
       </div>
     </h1>
     <div class="flex items-center">
+      <div
+        class={feesStatus({
+          status: pipe(
+            $fees,
+            AD.foldA(
+              (_) => 'initial',
+              (_) => 'loading',
+              (_) => 'error',
+              (_) => 'success'
+            )
+          ),
+        })}
+      ></div>
       <select
-        class="select select-ghost select-md text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-200"
+        class="select select-ghost select-md !pl-1 text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-200 lg:!pl-2"
         on:change={onChangeEndpoint}
       >
         {#each entries(endpoints) as [ep]}
