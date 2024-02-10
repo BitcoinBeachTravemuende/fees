@@ -76,6 +76,9 @@ devDependencies:
   prettier-plugin-tailwindcss:
     specifier: ^0.5.11
     version: 0.5.11(prettier-plugin-svelte@3.1.2)(prettier@3.2.5)
+  simple-git-hooks:
+    specifier: ^2.9.0
+    version: 2.9.0
   svelte-check:
     specifier: ^3.6.4
     version: 3.6.4(postcss@8.4.35)(svelte@4.2.10)
@@ -2652,6 +2655,12 @@ packages:
   /signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+    dev: true
+
+  /simple-git-hooks@2.9.0:
+    resolution: {integrity: sha512-waSQ5paUQtyGC0ZxlHmcMmD9I1rRXauikBwX31bX58l5vTOhCEcBC5Bi+ZDkPXTjDnZAF8TbCqKBY+9+sVPScw==}
+    hasBin: true
+    requiresBuild: true
     dev: true
 
   /slash@3.0.0:

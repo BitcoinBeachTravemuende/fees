@@ -1,0 +1,3 @@
+{
+  "pre-push": "pnpm check && pnpm format && pnpm lint"
+}
