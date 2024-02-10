@@ -1,6 +1,5 @@
 import type { ParseError } from '@effect/schema/ParseResult'
 import * as S from '@effect/schema/Schema'
-import type { ConfigError } from 'effect/ConfigError'
 import type { AsyncData } from './util/async'
 import { UrlSchema } from './util/url'
 
@@ -33,7 +32,7 @@ export const Fees = S.struct({
 
 export type Fees = S.Schema.To<typeof Fees>
 
-export type GetFeeError = Error | ConfigError | ParseError
+export type GetFeeError = Error | ParseError
 
 export type FeesAsync = AsyncData<GetFeeError, Fees>
 

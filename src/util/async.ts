@@ -56,13 +56,23 @@ export const isSuccess = <_, A>(
   data: AsyncData<_, A>
 ): data is Result<never, A> => data._tag === 'Result' && E.isRight(data.data)
 
-export const value = <E, A>(self: AsyncData<E, A>): O.Option<A> => {
+export const getValue = <E, A>(self: AsyncData<E, A>): O.Option<A> => {
   switch (self._tag) {
     case 'Initial':
     case 'Loading':
       return self.data
     case 'Result':
       return O.getRight(self.data)
+  }
+}
+
+export const getError = <E, A>(self: AsyncData<E, A>): O.Option<E> => {
+  switch (self._tag) {
+    case 'Initial':
+    case 'Loading':
+      return O.none()
+    case 'Result':
+      return O.getLeft(self.data)
   }
 }
 
