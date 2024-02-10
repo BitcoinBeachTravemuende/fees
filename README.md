@@ -1,12 +1,17 @@
 # Fees
 
-[Estimated fees for Bitcoin transactions](https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09_fees.adoc#estimating-appropriate-fee-rates) using configurable endpoints. Point endpoints to your (private) node as you like.
+[Estimated fees for Bitcoin transactions](https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09_fees.adoc#estimating-appropriate-fee-rates) using configurable endpoints.
+
+Live: https://fees.bitcoinbeachtravemuende.de
 
 [preview-fees.webm](https://github.com/BitcoinBeachTravemuende/fees/assets/47693/e0a20672-adb7-4f4e-8566-0566e15bb4fc)
 
-Currently [Mempool](https://mempool.space/) and [Esplora](https://github.com/Blockstream/esplora/) are supported only.
+Inspired by @0xb10c [List of Public Bitcoin Feerate Estimation APIs](https://b10c.me/blog/003-a-list-of-public-bitcoin-feerate-estimation-apis/) following APIs are currently supported:
 
-Looking for more endpoints to implement? The only requirement: It needs to be open source and available to host everywhere.
+- [Mempool](https://mempool.space/)
+- [Esplora](https://github.com/Blockstream/esplora/)
+- [Bitgo](https://www.bitgo.de/)
+- and more ... (soon™)
 
 ## Build
 
