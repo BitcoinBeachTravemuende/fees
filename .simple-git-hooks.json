@@ -1,3 +1,4 @@
 {
-  "pre-push": "pnpm check && pnpm format && pnpm lint"
+  "pre-commit": "pnpm format",
+  "pre-push": "pnpm check && pnpm lint && pnpm test"
 }
