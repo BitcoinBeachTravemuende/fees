@@ -25,8 +25,8 @@ type EndpointMapJSON = S.Schema.To<typeof EndpointMapJSONSchema>
 const defaultEndpointMapJSON = (): EndpointMapJSON => ({
   mempool: Mempool.DEFAULT_ENDPOINT_URL,
   esplora: Esplora.DEFAULT_ENDPOINT_URL,
-  bitgo: Bitgo.DEFAULT_ENDPOINT_URL,
   'rpc-explorer': Rpc.DEFAULT_ENDPOINT_URL,
+  bitgo: Bitgo.DEFAULT_ENDPOINT_URL,
 })
 
 export const mockEndpointMapJSON = (
