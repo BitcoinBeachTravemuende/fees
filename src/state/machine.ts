@@ -13,6 +13,7 @@ import * as AD from '../util/async'
 import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as RpcExplorer from '../api/rpc-explorer'
+import * as Bitgo from '../api/bitgo'
 import * as Storage from '../util/storage'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { FeesService } from '../api/common'
@@ -63,6 +64,10 @@ export const machine = setup({
           case 'esplora':
             return Effect.runPromise(
               Effect.provide(effect, Esplora.FeesServiceLayer)
+            )
+          case 'bitgo':
+            return Effect.runPromise(
+              Effect.provide(effect, Bitgo.FeesServiceLayer)
             )
         }
       }
