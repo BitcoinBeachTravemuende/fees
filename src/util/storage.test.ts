@@ -23,16 +23,9 @@ describe('Storage', () => {
 
   test('set / get endpoints', () => {
     // set
-    Effect.runSync(
-      Effect.provide(
-        setEndpoints(endpointMap),
-        BrowserKeyValueStore.layerLocalStorage
-      )
-    )
+    Effect.runSync(setEndpoints(endpointMap))
     // get
-    const result = Effect.runSync(
-      Effect.provide(getEndpoints(), BrowserKeyValueStore.layerLocalStorage)
-    )
+    const result = Effect.runSync(getEndpoints())
     // test
     expect(result).toStrictEqual(endpointMap)
   })

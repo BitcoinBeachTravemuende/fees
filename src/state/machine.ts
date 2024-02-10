@@ -20,9 +20,8 @@ import {
 import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as RpcExplorer from '../api/rpc-explorer'
+import * as Storage from '../util/storage'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
-import { setEndpoints } from '../util/storage'
-import { BrowserKeyValueStore } from '@effect/platform-browser'
 import { FeesService } from '../api/common'
 
 const MAX_RETRIES = 2
@@ -102,12 +101,7 @@ export const machine = setup({
         endpoints: EndpointMap
       }
     ) => {
-      await Effect.runPromise(
-        Effect.provide(
-          setEndpoints(params.endpoints),
-          BrowserKeyValueStore.layerLocalStorage
-        )
-      )
+      await Effect.runPromise(Storage.setEndpoints(params.endpoints))
     },
   },
 }).createMachine({
