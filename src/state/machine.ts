@@ -9,14 +9,7 @@ import type {
   FeesAsync,
   GetFeeError,
 } from '../types'
-import {
-  fail,
-  initial,
-  isSuccess,
-  loading,
-  success,
-  value,
-} from '../util/async'
+import * as AD from '../util/async'
 import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as RpcExplorer from '../api/rpc-explorer'
@@ -90,7 +83,7 @@ export const machine = setup({
   guards: {
     checkRetry: ({ context }) => context.retries < MAX_RETRIES,
     checkLastRetry: ({ context }) => context.retries >= MAX_RETRIES,
-    hasFeesLoaded: ({ context }) => isSuccess(context.fees),
+    hasFeesLoaded: ({ context }) => AD.isSuccess(context.fees),
     checkTick: ({ context }) => context.ticks * INTERVAL_MS < MAX_TICK_MS,
     checkMaxTick: ({ context }) => context.ticks * INTERVAL_MS >= MAX_TICK_MS,
   },
@@ -109,7 +102,7 @@ export const machine = setup({
   context: ({ input }) => ({
     selectedEndpoint: input.selectedEndpoint,
     endpoints: input.endpoints,
-    fees: initial(O.none()),
+    fees: AD.initial(O.none()),
     ticks: 0,
     retries: 0,
   }),
@@ -135,7 +128,7 @@ export const machine = setup({
         onDone: {
           target: 'ticker',
           actions: assign(({ event }) => ({
-            fees: success(event.output),
+            fees: AD.success(event.output),
             retries: 0,
           })),
         },
@@ -151,7 +144,7 @@ export const machine = setup({
             guard: 'checkLastRetry',
             target: 'idle',
             actions: assign(({ event }) => ({
-              fees: fail(event.error as unknown as GetFeeError),
+              fees: AD.fail(event.error as unknown as GetFeeError),
             })),
           },
         ],
@@ -170,7 +163,7 @@ export const machine = setup({
     'endpoint.change': {
       target: '.loading',
       actions: assign(({ context, event }) => ({
-        fees: pipe(context.fees, value, loading),
+        fees: pipe(context.fees, AD.getValue, AD.loading),
         selectedEndpoint: event.endpoint,
         retries: 0,
         ticks: 0,
@@ -180,7 +173,7 @@ export const machine = setup({
       target: '.loading',
       actions: [
         assign(({ context, event }) => ({
-          fees: pipe(context.fees, value, loading),
+          fees: pipe(context.fees, AD.getValue, AD.loading),
           url: event.data.url,
           selectedEndpoint: event.data.endpoint,
           endpoints: {
@@ -204,7 +197,7 @@ export const machine = setup({
     'fees.load': {
       target: '.loading',
       actions: assign(({ context }) => ({
-        fees: pipe(context.fees, value, loading),
+        fees: pipe(context.fees, AD.getValue, AD.loading),
         retries: 0,
         ticks: 0,
       })),
@@ -215,7 +208,7 @@ export const machine = setup({
         target: '.loading',
         actions: [
           assign(({ context }) => ({
-            fees: pipe(context.fees, value, loading),
+            fees: pipe(context.fees, AD.getValue, AD.loading),
             ticks: 0,
           })),
         ],

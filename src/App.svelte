@@ -7,7 +7,7 @@
     INTERVAL_MS,
     themeActorRef,
   } from './state/store'
-  import * as AS from './util/async'
+  import * as AD from './util/async'
   import { pipe, Option as O } from 'effect'
   import { useSelector } from '@xstate/svelte'
   import { Fees, entries, isEndpoint, type Theme } from './types'
@@ -39,7 +39,7 @@
   // helper to map fees into values that can be rendered with <Fee />
   $: feesToRender = pipe(
     $fees,
-    AS.value,
+    AD.getValue,
     O.map((fees) => ({
       fast: Math.round(fees.fast),
       medium: Math.round(fees.medium),
@@ -119,20 +119,26 @@
   </header>
 
   <main class="flex flex-grow flex-col items-center justify-center">
-    <div class="my-24">
+    <div class="my-24 flex flex-col items-center">
       <div class="grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-3 md:gap-y-6">
         {#each feesToRender as { type, value }}
           <Fee
             {type}
             {value}
-            loading={AS.isLoading($fees) || AS.isInitial($fees)}
-            error={AS.isFailure($fees)}
+            loading={AD.isLoading($fees) || AD.isInitial($fees)}
+            error={AD.isFailure($fees)}
           />
         {/each}
       </div>
-      {#if AS.isFailure($fees)}
-        <p class="mt-10 w-full p-4 text-center text-sm text-error">
-          Error while loading fees from {$endpoint}.
+      {#if AD.isFailure($fees)}
+        <p class="mt-10 w-full p-4 text-center text-base text-error">
+          Error while loading fees from {$endpoint}. <br />
+          {pipe(
+            $fees,
+            AD.getError,
+            O.map((e) => e?.message ?? e.toString()),
+            O.getOrElse(() => '')
+          )}
         </p>
       {/if}
     </div>
@@ -141,7 +147,7 @@
       class="group relative h-12 w-12 md:h-14 md:w-14"
       title="Refresh fees"
       on:click={() => send({ type: 'fees.load' })}
-      disabled={AS.isLoading($fees)}
+      disabled={AD.isLoading($fees)}
     >
       <div
         class="h-full w-full rounded-full border-[2px] border-gray-200 dark:border-gray-600"
