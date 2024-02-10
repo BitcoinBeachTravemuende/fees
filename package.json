@@ -6,12 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint 'src/**/*.{ts,svelte}' --fix",
-    "format": "prettier 'src/**/*.{ts,svelte}' --write",
+    "lint": "eslint 'src/**/*.{ts,svelte}' --fix --cache",
+    "format": "prettier 'src/**/*.{ts,svelte}' --write --cache",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "test": "vitest",
-    "prepare": "husky"
+    "test": "vitest"
   },
   "devDependencies": {
     "@effect/language-service": "^0.1.0",
