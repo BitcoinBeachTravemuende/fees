@@ -195,9 +195,9 @@
         class={twMerge(
           'absolute inset-x-[4px] inset-y-[4px]',
           'flex items-center justify-center',
-          'rounded-full border-2 border-transparent bg-gray-300 group-hover:bg-orange-400 group-hover:opacity-100 dark:bg-gray-700',
+          'rounded-full border-2 border-transparent bg-gray-300 hover:bg-green-400 hover:opacity-100 dark:bg-gray-700',
           'ease',
-          percent > 0 ? 'opacity-0' : ''
+          percent > 0 && 'opacity-0'
         )}
       >
         <svg
