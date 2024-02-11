@@ -172,6 +172,7 @@
       class="group relative h-12 w-12 md:h-14 md:w-14"
       title="Refresh fees"
       on:click={() => send({ type: 'fees.load' })}
+      disabled={AD.isLoading($fees)}
     >
       <div
         class="h-full w-full rounded-full border-[2px] border-gray-200 dark:border-gray-600"
@@ -191,7 +192,7 @@
         {/if}
       </div>
       <div
-        class="absolute inset-x-[4px] inset-y-[4px] flex items-center justify-center rounded-full border-2 border-transparent bg-orange-400 opacity-0 group-hover:opacity-100"
+        class="ease absolute inset-x-[4px] inset-y-[4px] flex items-center justify-center rounded-full border-2 border-transparent bg-gray-300 dark:bg-gray-700 [@media(any-hover:hover)]:opacity-0 [@media(any-hover:hover)]:group-hover:bg-orange-400 [@media(hover:hover)]:group-hover:opacity-100"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
