@@ -69,7 +69,7 @@
   })
 
   const feesStatus = tv({
-    base: 'rounded-full w-2 h-2 ease mt-1',
+    base: 'rounded-full w-2 h-2 ease',
     variants: {
       status: {
         initial: 'bg-gray-300',
@@ -195,9 +195,8 @@
         class={twMerge(
           'absolute inset-x-[4px] inset-y-[4px]',
           'flex items-center justify-center',
-          'rounded-full border-2 border-transparent bg-gray-300 hover:bg-green-400 hover:opacity-100 dark:bg-gray-700',
-          'ease',
-          percent > 0 && 'opacity-0'
+          'rounded-full border-2 border-transparent bg-blue-400 opacity-0  group-hover:opacity-100 dark:bg-gray-700',
+          'ease'
         )}
       >
         <svg
