@@ -7,7 +7,13 @@ export const ThemeSchema = S.literal('dark', 'light')
 
 export type Theme = S.Schema.To<typeof ThemeSchema>
 
-const ENDPOINTS = ['mempool', 'esplora', 'rpc-explorer', 'bitgo'] as const
+const ENDPOINTS = [
+  'mempool',
+  'esplora',
+  'rpc-explorer',
+  'bitgo',
+  'blockcypher',
+] as const
 
 export const EndpointSchema = S.literal(...ENDPOINTS)
 

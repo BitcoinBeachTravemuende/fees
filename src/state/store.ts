@@ -10,6 +10,7 @@ import { type EndpointMap } from '../types'
 import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as Bitgo from '../api/bitgo'
+import * as Blockcypher from '../api/blockcypher'
 import * as Rpc from '../api/rpc-explorer'
 import * as Storage from '../util/storage'
 
@@ -26,8 +27,9 @@ export const defaultEndpoints: Effect.Effect<
     Effect.all({
       mempool: Mempool.defaultUrl(),
       esplora: Esplora.defaultUrl(),
-      bitgo: Bitgo.defaultUrl(),
       'rpc-explorer': Rpc.defaultUrl(),
+      bitgo: Bitgo.defaultUrl(),
+      blockcypher: Blockcypher.defaultUrl(),
     })
   )
 )

@@ -51,12 +51,14 @@ describe('EndpointMapSchema', () => {
   const url2 = 'https://example2.com/api/fees'
   const url3 = 'https://example3.com/'
   const url4 = 'https://example4.com/'
+  const url5 = 'https://example5.com/fees'
 
   const endpointMap: EndpointMap = mockEndpointMap({
     mempool: new URL(url1),
     esplora: new URL(url2),
     'rpc-explorer': new URL(url3),
     bitgo: new URL(url4),
+    blockcypher: new URL(url5),
   })
 
   const endpointMapJSON = mockEndpointMapJSON({
@@ -64,6 +66,7 @@ describe('EndpointMapSchema', () => {
     esplora: url2,
     'rpc-explorer': url3,
     bitgo: url4,
+    blockcypher: url5,
   })
 
   const endpointMapString = JSON.stringify(endpointMapJSON)

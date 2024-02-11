@@ -79,7 +79,9 @@
   <ul>
     {#each entries(endpoints) as [ep, url]}
       <li class="my-4 first:mt-0">
-        <h3 class="mb-2 text-base text-gray-600 dark:text-gray-300 lg:text-lg">
+        <h3
+          class="mb-2 text-base uppercase text-gray-700 dark:text-gray-300 lg:text-lg"
+        >
           {ep}
         </h3>
         <EditableUrlInput
