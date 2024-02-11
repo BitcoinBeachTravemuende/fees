@@ -13,6 +13,7 @@ const ENDPOINTS = [
   'rpc-explorer',
   'bitgo',
   'blockcypher',
+  'blockchain',
 ] as const
 
 export const EndpointSchema = S.literal(...ENDPOINTS)
