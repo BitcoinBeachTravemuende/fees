@@ -14,6 +14,7 @@ import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as RpcExplorer from '../api/rpc-explorer'
 import * as Bitgo from '../api/bitgo'
+import * as Blockcypher from '../api/blockcypher'
 import * as Storage from '../util/storage'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { FeesService } from '../api/common'
@@ -68,6 +69,10 @@ export const machine = setup({
           case 'bitgo':
             return Effect.runPromise(
               Effect.provide(effect, Bitgo.FeesServiceLayer)
+            )
+          case 'blockcypher':
+            return Effect.runPromise(
+              Effect.provide(effect, Blockcypher.FeesServiceLayer)
             )
         }
       }

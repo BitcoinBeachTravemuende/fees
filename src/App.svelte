@@ -117,12 +117,12 @@
         })}
       ></div>
       <select
-        class="select select-ghost select-md !pl-1 text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-200 lg:!pl-2"
+        class="select select-ghost select-md !pl-1 uppercase text-gray-500 md:select-lg hover:text-gray-600 focus:border-none focus:outline-none dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-200 lg:!pl-2"
         on:change={onChangeEndpoint}
       >
         {#each entries(endpoints) as [ep]}
           <option class="text-gray-500" value={ep} selected={ep === $endpoint}>
-            {ep}
+            {ep.toUpperCase()}
           </option>
         {/each}
       </select>
