@@ -13,7 +13,6 @@
   import { useSelector } from '@xstate/svelte'
   import { Fees, entries, isEndpoint, type Theme } from './types'
   import Fee from './component/Fee.svelte'
-  import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
   import Settings from './component/Settings.svelte'
   import { fade } from 'svelte/transition'
@@ -192,12 +191,7 @@
         {/if}
       </div>
       <div
-        class={twMerge(
-          'absolute inset-x-[4px] inset-y-[4px]',
-          'flex items-center justify-center',
-          'rounded-full border-2 border-transparent bg-blue-400 opacity-0  group-hover:opacity-100 dark:bg-gray-700',
-          'ease'
-        )}
+        class="absolute inset-x-[4px] inset-y-[4px] flex items-center justify-center rounded-full border-2 border-transparent bg-orange-400 opacity-0 group-hover:opacity-100"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
