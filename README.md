@@ -18,13 +18,13 @@ Inspired by [@0xb10c](https://github.com/0xb10c)'s list of [Public Bitcoin Feera
 - [Esplora](https://github.com/Blockstream/esplora/)
 - [Bitgo](https://developers.bitgo.com/explorer)
 - [Blockcypher](https://www.blockcypher.com/dev/bitcoin/)
-- [Blockchain.info](https://www.blockchain.com/explorer/api):
+- [Blockchain.info](https://www.blockchain.com/explorer/api)
 
 Following APIs can't be supported due missing data:
 
-- [Bitcoiner.live](https://bitcoiner.live/api/fees/estimates/latest): It starts calculation of estimated fees for next 30min, but not before. That's 'fast' fees for next block are missing.
-- [Blockchair](https://api.blockchair.com/bitcoin/stats) Supports a single `suggested_transaction_fee_per_byte_sat` only, but no relationship to next blocks.
-- [BTC.com](https://btc.com/service/fees/distribution) Supports a `one_block_fee` only, but no relationship to next blocks.
+- [Bitcoiner.live](https://bitcoiner.live/api/fees/estimates/latest) it starts calculation of estimated fees for next 30min, but not before. That's 'fast' fees for next block are missing.
+- [Blockchair](https://api.blockchair.com/bitcoin/stats) supports a single `suggested_transaction_fee_per_byte_sat` only, but no relationship to next blocks.
+- [BTC.com](https://btc.com/service/fees/distribution) supports a `one_block_fee` only, but no relationship to next blocks.
 
 ## Build
 
