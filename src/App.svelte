@@ -13,7 +13,6 @@
   import { useSelector } from '@xstate/svelte'
   import { Fees, entries, isEndpoint, type Theme } from './types'
   import Fee from './component/Fee.svelte'
-  import { twMerge } from 'tailwind-merge'
   import { onMount } from 'svelte'
   import Settings from './component/Settings.svelte'
   import { fade } from 'svelte/transition'
@@ -69,7 +68,7 @@
   })
 
   const feesStatus = tv({
-    base: 'rounded-full w-2 h-2 ease mt-1',
+    base: 'rounded-full w-2 h-2 ease',
     variants: {
       status: {
         initial: 'bg-gray-300',
@@ -193,13 +192,7 @@
         {/if}
       </div>
       <div
-        class={twMerge(
-          'absolute inset-x-[4px] inset-y-[4px]',
-          'flex items-center justify-center',
-          'hover:bg-orange rounded-full border-2 border-transparent bg-gray-300 group-hover:opacity-100 group-active:bg-orange-400 group-active:opacity-100 dark:bg-gray-700',
-          'ease',
-          percent > 0 && 'opacity-0'
-        )}
+        class="ease absolute inset-x-[4px] inset-y-[4px] flex items-center justify-center rounded-full border-2 border-transparent bg-gray-300 dark:bg-gray-700 [@media(any-hover:hover)]:opacity-0 [@media(any-hover:hover)]:group-hover:bg-orange-400 [@media(hover:hover)]:group-hover:opacity-100"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
