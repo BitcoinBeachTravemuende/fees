@@ -15,6 +15,7 @@ import * as Esplora from '../api/esplora'
 import * as RpcExplorer from '../api/rpc-explorer'
 import * as Bitgo from '../api/bitgo'
 import * as Blockcypher from '../api/blockcypher'
+import * as Blockchain from '../api/blockchain'
 import * as Storage from '../util/storage'
 import { INTERVAL_MS, MAX_TICK_MS } from './store'
 import { FeesService } from '../api/common'
@@ -73,6 +74,10 @@ export const machine = setup({
           case 'blockcypher':
             return Effect.runPromise(
               Effect.provide(effect, Blockcypher.FeesServiceLayer)
+            )
+          case 'blockchain':
+            return Effect.runPromise(
+              Effect.provide(effect, Blockchain.FeesServiceLayer)
             )
         }
       }

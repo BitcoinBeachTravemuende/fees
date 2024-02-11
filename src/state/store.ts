@@ -11,6 +11,7 @@ import * as Mempool from '../api/mempool'
 import * as Esplora from '../api/esplora'
 import * as Bitgo from '../api/bitgo'
 import * as Blockcypher from '../api/blockcypher'
+import * as Blockchain from '../api/blockchain'
 import * as Rpc from '../api/rpc-explorer'
 import * as Storage from '../util/storage'
 
@@ -30,6 +31,7 @@ export const defaultEndpoints: Effect.Effect<
       'rpc-explorer': Rpc.defaultUrl(),
       bitgo: Bitgo.defaultUrl(),
       blockcypher: Blockcypher.defaultUrl(),
+      blockchain: Blockchain.defaultUrl(),
     })
   )
 )
