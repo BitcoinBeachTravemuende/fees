@@ -197,7 +197,7 @@
           'flex items-center justify-center',
           'rounded-full border-2 border-transparent bg-gray-300 group-hover:bg-orange-400 group-hover:opacity-100 dark:bg-gray-700',
           'ease',
-          percent > 0 && 'opacity-0'
+          percent > 0 ? 'opacity-0' : ''
         )}
       >
         <svg
