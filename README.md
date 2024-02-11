@@ -18,7 +18,6 @@ Inspired by [@0xb10c](https://github.com/0xb10c)'s list of [Public Bitcoin Feera
 - [Esplora](https://github.com/Blockstream/esplora/)
 - [Bitgo](https://developers.bitgo.com/explorer)
 - [Blockcypher](https://www.blockcypher.com/dev/bitcoin/)
-- [Bitcoiner.live](https://bitcoiner.live/doc/api)
 - [Blockchain.info](https://www.blockchain.com/explorer/api):
 
 Following APIs can't be supported due missing data:
