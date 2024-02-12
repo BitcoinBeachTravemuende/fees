@@ -14,13 +14,16 @@ import {
 const KEY_ENDPOITNS = 'endpoints'
 const KEY_THEME = 'theme'
 
-const getLocalStorage = <A, E, R>(key: string, schema: S.Schema<A, E, R>) => {
+const getLocalStorage = <A>(
+  key: string,
+  schema: S.Schema<A, string, never>
+) => {
   const effect = pipe(
     KeyValueStore.KeyValueStore,
     Effect.flatMap((kv) => kv.get(key)),
     // In case there is no value, set empty string to break decoding in next step
     Effect.map(O.getOrElse(() => '')),
-    Effect.flatMap(S.decodeUnknown(S.parseJson(schema)))
+    Effect.flatMap(S.decodeUnknown(schema))
   )
   return Effect.provide(effect, BrowserKeyValueStore.layerLocalStorage)
 }
@@ -30,18 +33,18 @@ export const getEndpoints = () =>
 
 export const getTheme = () => getLocalStorage(KEY_THEME, ThemeSchema)
 
-const setLocalStorage = <A, E, R>(
+const setLocalStorage = <A>(
   value: A,
   key: string,
-  schema: S.Schema<A, E, R>
+  schema: S.Schema<A, string, never>
 ) => {
   const effect = pipe(
     value,
     S.encode(schema),
-    Effect.flatMap((json) =>
+    Effect.flatMap((encoded) =>
       pipe(
         KeyValueStore.KeyValueStore,
-        Effect.flatMap((kv) => kv.set(key, JSON.stringify(json)))
+        Effect.flatMap((kv) => kv.set(key, encoded))
       )
     )
   )

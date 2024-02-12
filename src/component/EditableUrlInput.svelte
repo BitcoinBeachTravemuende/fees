@@ -174,7 +174,3 @@
     </div>
   {/if}
 </div>
-<div class="flex flex-col">
-  <!-- <p>value {JSON.stringify($snapshot.value)}</p> -->
-  <!-- <p>entered {$snapshot.context.enteredValue}!</p> -->
-</div>
