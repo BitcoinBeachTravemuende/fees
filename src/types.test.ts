@@ -7,7 +7,7 @@ import {
 } from './types'
 import * as S from '@effect/schema/Schema'
 import { pipe, Effect } from 'effect'
-import { mockEndpointMap, mockEndpointMapJSON } from './test/mocks'
+import { mockEndpointMap } from './test/mocks'
 
 describe('Endpoint', () => {
   test('isEndpoint', () => {
@@ -63,27 +63,10 @@ describe('EndpointMapSchema', () => {
     blockchain: new URL(url6),
   })
 
-  const endpointMapJSON = mockEndpointMapJSON({
-    mempool: url1,
-    esplora: url2,
-    'rpc-explorer': url3,
-    bitgo: url4,
-    blockcypher: url5,
-    blockchain: url6,
-  })
-
-  const endpointMapString = JSON.stringify(endpointMapJSON)
+  const endpointMapString = pipe(endpointMap, S.encodeSync(EndpointMapSchema))
 
   test('decode string -> valid', () => {
-    const result = pipe(
-      endpointMapString,
-      S.decodeSync(S.parseJson(EndpointMapSchema))
-    )
-    expect(result).toEqual(endpointMap)
-  })
-
-  test('decode json -> valid', () => {
-    const result = pipe(endpointMapJSON, S.decodeSync(EndpointMapSchema))
+    const result = pipe(endpointMapString, S.decodeSync(EndpointMapSchema))
     expect(result).toEqual(endpointMap)
   })
 
@@ -97,17 +80,8 @@ describe('EndpointMapSchema', () => {
     ).rejects.toThrow()
   })
 
-  test('encode -> JSON', () => {
-    const result = pipe(endpointMap, S.encodeSync(EndpointMapSchema))
-    expect(result).toEqual(endpointMapJSON)
-  })
-
   test('encode -> string', () => {
-    const result = pipe(
-      endpointMap,
-      S.encodeSync(EndpointMapSchema),
-      JSON.stringify
-    )
+    const result = pipe(endpointMap, S.encodeSync(EndpointMapSchema))
     expect(result).toEqual(endpointMapString)
   })
 })
