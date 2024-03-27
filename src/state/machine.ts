@@ -98,7 +98,6 @@ export const machine = setup({
   guards: {
     checkRetry: ({ context }) => context.retries < MAX_RETRIES,
     checkLastRetry: ({ context }) => context.retries >= MAX_RETRIES,
-    hasFeesLoaded: ({ context }) => AD.isSuccess(context.fees),
     checkTick: ({ context }) => context.ticks * INTERVAL_MS < MAX_TICK_MS,
     checkMaxTick: ({ context }) => context.ticks * INTERVAL_MS >= MAX_TICK_MS,
   },

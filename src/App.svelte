@@ -1,7 +1,6 @@
 <script lang="ts">
   import btcLogo from './assets/btc.svg'
   import { tv } from 'tailwind-variants'
-  import './app.css'
   import {
     actorRef,
     MAX_TICK_MS,
