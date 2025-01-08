@@ -210,13 +210,12 @@
     class="mt-20 flex flex-col items-center p-4 text-gray-400 dark:text-gray-400"
   >
     <aside class="flex items-center text-xs md:text-sm">
-      <a
-        href="https://github.com/BitcoinBeachTravemuende/fees/"
-        class="underline"
+      Open Source <a
+        href="https://github.com/sectore/fees/"
+        class="ml-1 underline"
       >
-        Open Source
-      </a>. Made with
-      <span class="mx-1 text-base text-orange-400">♥</span> in Travemünde.
+        at GitHub
+      </a>.
     </aside>
   </footer>
 
@@ -249,13 +248,13 @@
   ></div>
 {/if}
 
-<!-- 
+<!--
   Note: postcss is needed for Tailwind's `@apply`
   @see https://github.com/sveltejs/language-tools/issues/1512#issuecomment-1146735101
  -->
 <style lang="postcss">
-  /* 
-    progress color needs to be defined here, 
+  /*
+    progress color needs to be defined here,
     because `class:text-orange-400` won't be included
     if this tailwind class is not used anywhere else
   */

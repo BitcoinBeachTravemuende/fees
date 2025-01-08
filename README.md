@@ -4,11 +4,11 @@
 
 ## Live
 
-https://fees.bitcoinbeachtravemuende.de
+https://sectore.github.io/fees/
 
 ## Preview
 
-[preview-fees.webm](https://github.com/BitcoinBeachTravemuende/fees/assets/47693/e0a20672-adb7-4f4e-8566-0566e15bb4fc)
+// TODO: Upload
 
 ## APIs
 
