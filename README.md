@@ -2,13 +2,9 @@
 
 [Estimated fees for Bitcoin transactions](https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch09_fees.adoc#estimating-appropriate-fee-rates) using public endpoints. All endpoints are customizable to point to local or private endpoint if needed.
 
-## Live
+### Live: https://sectore.github.io/fees/
 
-https://sectore.github.io/fees/
-
-## Preview
-
-// TODO: Upload
+![fees](https://github.com/user-attachments/assets/aa46a1a7-8228-4b77-830c-10b80b9685e5)
 
 ## APIs
 
